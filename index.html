@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Один диагноз — симуляция болезни</title>
+<meta name="description" content="Симуляция одной болезни: диагноз выбирается по реальной статистике, и вы проживаете его до конца. 16 болезней, пять пауз, данные ВОЗ и GLOBOCAN.">
+<meta name="theme-color" content="#0a0a0b">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230a0a0b'/><path d='M16 5v22M5 16h22' stroke='%23e0694f' stroke-width='2.5'/></svg>">
+<style>
+:root{
+  --bg:#0a0a0b; --bg1:#0e0f11; --card:#121317; --card2:#16171c;
+  --line:#232428; --line2:#33353c;
+  --ink:#e9e6e0; --dim:#8b8a86; --dim2:#5f5f5c;
+  --acc:#e0694f; --acc-soft:rgba(224,105,79,.13);
+  --ok:#7f9d82; --warn:#c79a5c;
+  --serif:"Georgia","Iowan Old Style","Times New Roman",Times,serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --r:14px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+  font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(1200px 700px at 50% -10%,rgba(224,105,79,.055),transparent 70%);
+  background-repeat:no-repeat;
+}
+::selection{background:rgba(224,105,79,.28)}
+a{color:inherit;text-decoration-color:var(--line2);text-underline-offset:3px}
+a:hover{text-decoration-color:var(--acc)}
+h1,h2,h3,h4{font-family:var(--serif);font-weight:400;letter-spacing:-.015em;line-height:1.12;margin:0}
+p{margin:0}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.wrap{max-width:780px;margin:0 auto;padding:0 24px}
+.mono{font-variant-numeric:tabular-nums}
+.dim{color:var(--dim)}
+.small{font-size:13px;line-height:1.55}
+
+/* ---------- top bar ---------- */
+.top{
+  position:sticky;top:0;z-index:40;backdrop-filter:blur(14px);
+  background:rgba(10,10,11,.78);border-bottom:1px solid var(--line);
+}
+.top .in{display:flex;align-items:center;gap:18px;height:58px}
+.brand{display:flex;align-items:baseline;gap:10px;min-width:0}
+.brand b{font-family:var(--serif);font-weight:400;font-size:15px;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap}
+.brand span{font-size:11px;color:var(--dim2);letter-spacing:.06em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top nav{margin-left:auto;display:flex;gap:20px;font-size:13px;color:var(--dim)}
+.top nav a{text-decoration:none}
+.top nav a:hover{color:var(--ink)}
+@media(max-width:640px){.top nav a:nth-child(n+3){display:none}.brand span{display:none}}
+
+/* ---------- hero ---------- */
+.hero{padding:54px 0 10px}
+.kicker{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim2);margin-bottom:26px}
+.hero h1{font-size:clamp(54px,13vw,132px);letter-spacing:-.05em;line-height:.9;display:flex;align-items:baseline;gap:.14em;flex-wrap:wrap}
+.hero h1 em{font-style:italic;color:var(--acc)}
+.hero h1 span{font-size:clamp(20px,4.4vw,40px);letter-spacing:-.02em;color:var(--dim)}
+.lead{font-family:var(--serif);font-size:clamp(17px,2.4vw,21px);line-height:1.5;color:#d6d2ca;max-width:37em;margin-top:28px}
+.lead b{font-weight:400;color:var(--ink);border-bottom:1px solid var(--acc)}
+.hero .after{margin-top:22px;color:var(--dim);font-size:14px;max-width:34em}
+
+/* counters */
+.counters{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:40px}
+.counters div{background:var(--bg1);padding:18px 16px}
+.counters b{display:block;font-family:var(--serif);font-size:clamp(22px,3.6vw,30px);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.counters span{display:block;font-size:12px;color:var(--dim);line-height:1.4;margin-top:6px}
+@media(max-width:560px){.counters{grid-template-columns:1fr}.counters div{padding:14px 16px}.counters b{font-size:24px}}
+
+/* ---------- panel / card ---------- */
+section{scroll-margin-top:80px}
+.sec{padding:64px 0 0}
+.sec>h2{font-size:clamp(26px,4.4vw,36px)}
+.sec>.sub{color:var(--dim);margin-top:10px;max-width:36em;font-size:14.5px}
+.card{border:1px solid var(--line);border-radius:var(--r);background:linear-gradient(180deg,var(--card2),var(--card));margin-top:26px;overflow:hidden}
+.card .pad{padding:22px}
+@media(max-width:560px){.card .pad{padding:18px}}
+
+/* setup */
+.setup{margin-top:34px;border:1px solid var(--line2);border-radius:var(--r);background:linear-gradient(180deg,#17181d,#111216);box-shadow:0 30px 80px -50px #000;overflow:hidden}
+.setup .hd{padding:20px 22px 0}
+.setup h2{font-size:clamp(22px,3.6vw,29px)}
+.setup .hd p{color:var(--dim);font-size:14px;margin-top:8px}
+.setup .bd{padding:20px 22px 22px;display:grid;gap:20px}
+@media(max-width:560px){.setup .hd,.setup .bd{padding-left:18px;padding-right:18px}}
+.fields{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:660px){.fields{grid-template-columns:1fr 1fr}}
+@media(max-width:440px){.fields{grid-template-columns:1fr}}
+.field label{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim2);margin-bottom:7px}
+.seg{display:flex;border:1px solid var(--line2);border-radius:9px;overflow:hidden;background:#0c0d0f}
+.seg button{flex:1;padding:9px 6px;font-size:12.5px;color:var(--dim);border-right:1px solid var(--line);transition:.16s}
+.seg button:last-child{border-right:0}
+.seg button:hover{color:var(--ink)}
+.seg button.on{background:var(--acc-soft);color:#f0a591}
+select{
+  width:100%;appearance:none;background:#0c0d0f url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238b8a86' fill='none' stroke-width='1.4'/%3E%3C/svg%3E") no-repeat right 12px center;
+  border:1px solid var(--line2);border-radius:9px;color:var(--ink);padding:9px 30px 9px 12px;font-size:13.5px;font-family:inherit;
+}
+select:focus{outline:2px solid rgba(224,105,79,.5);outline-offset:1px}
+.toggles{display:flex;flex-wrap:wrap;gap:8px 18px;border-top:1px solid var(--line);padding-top:16px}
+.tg{display:inline-flex;align-items:center;gap:9px;font-size:13px;color:var(--dim);cursor:pointer;user-select:none}
+.tg input{position:absolute;opacity:0;width:0;height:0}
+.tg i{width:32px;height:18px;border-radius:20px;background:#2a2b31;position:relative;transition:.2s;flex:0 0 auto}
+.tg i::after{content:"";position:absolute;top:3px;left:3px;width:12px;height:12px;border-radius:50%;background:#8b8a86;transition:.2s}
+.tg input:checked+i{background:rgba(224,105,79,.3)}
+.tg input:checked+i::after{left:17px;background:var(--acc)}
+.tg input:focus-visible+i{outline:2px solid var(--acc);outline-offset:2px}
+.tg:hover{color:var(--ink)}
+.actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:18px}
+.btn{background:var(--ink);color:#111;border-radius:11px;padding:14px 26px;font-size:15px;font-weight:600;letter-spacing:.01em;transition:.18s}
+.btn:hover{background:#fff;transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn.ghost{background:transparent;color:var(--dim);border:1px solid var(--line2);font-weight:400;padding:13px 20px;font-size:13.5px}
+.btn.ghost:hover{color:var(--ink);border-color:var(--dim2);background:#0f1013;transform:none}
+.micro{font-size:12px;color:var(--dim2)}
+
+/* how */
+.cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:26px}
+@media(max-width:720px){.cards3{grid-template-columns:1fr}}
+.cards3 article{border:1px solid var(--line);border-radius:12px;padding:20px;background:var(--card)}
+.cards3 h3{font-size:17px;margin-bottom:9px}
+.cards3 p{font-size:13.5px;color:var(--dim);line-height:1.55}
+
+/* prose */
+.prose{margin-top:22px;max-width:44em}
+.prose p{color:#c3c0ba;font-size:15px;line-height:1.72;margin-bottom:15px}
+.prose p:last-child{margin-bottom:0}
+.prose em{color:var(--ink);font-style:italic}
+
+/* table */
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:24px}
+.tbl th{text-align:left;font-weight:400;font-size:11px;letter-spacing:.11em;text-transform:uppercase;color:var(--dim2);padding:0 12px 10px 0;border-bottom:1px solid var(--line)}
+.tbl td{padding:11px 12px 11px 0;border-bottom:1px solid #1a1b1f;vertical-align:top;color:var(--dim)}
+.tbl td:first-child{color:var(--ink)}
+.tbl tr:hover td{background:#0f1013}
+.tbl .tag{display:inline-block;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--dim2);border:1px solid var(--line2);border-radius:4px;padding:1px 6px;margin-top:4px}
+@media(max-width:640px){.tbl .hide-s{display:none}}
+
+/* safety */
+.safety{border:1px solid #3a2a24;background:linear-gradient(180deg,rgba(224,105,79,.07),rgba(224,105,79,.02));border-radius:var(--r);padding:22px;margin-top:26px}
+.safety h3{font-size:19px;margin-bottom:10px}
+.safety p{font-size:14px;color:#cfc7c2;line-height:1.6;margin-bottom:10px}
+.lines{display:grid;grid-template-columns:1fr 1fr;gap:10px 22px;margin-top:14px;font-size:13px;color:var(--dim)}
+.lines b{color:var(--ink);font-weight:400}
+@media(max-width:560px){.lines{grid-template-columns:1fr}}
+
+/* past lives */
+.past{display:none}
+.past.on{display:block}
+.plist{margin-top:16px;border-top:1px solid var(--line)}
+.plist div{display:flex;gap:14px;align-items:baseline;padding:10px 0;border-bottom:1px solid #1a1b1f;font-size:13.5px;color:var(--dim)}
+.plist b{font-weight:400;color:var(--ink);flex:1;min-width:0}
+.plist code{font-size:11.5px;color:var(--dim2);font-family:ui-monospace,Menlo,monospace}
+
+footer{margin-top:78px;border-top:1px solid var(--line);padding:30px 0 60px;color:var(--dim2);font-size:12.5px;line-height:1.7}
+footer .frow{display:flex;gap:18px;flex-wrap:wrap;margin-top:12px}
+footer a{color:var(--dim);text-decoration:none}
+footer a:hover{color:var(--ink)}
+
+/* ---------- simulation overlay ---------- */
+.sim{position:fixed;inset:0;z-index:100;background:radial-gradient(900px 600px at 50% 0%,#14151a 0%,#08080a 65%);display:none;overflow:hidden}
+.sim.on{display:block;animation:simIn .45s ease}
+@keyframes simIn{from{opacity:0}to{opacity:1}}
+.sim-inner{max-width:800px;margin:0 auto;height:100%;display:flex;flex-direction:column;padding:0 22px;position:relative}
+.sim-top{display:flex;align-items:center;gap:14px;padding:16px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.sim-name{font-family:var(--serif);font-size:17px;line-height:1.2}
+.sim-name small{display:block;font-family:var(--sans);font-size:11.5px;color:var(--dim2);letter-spacing:.04em;margin-top:2px}
+.sim-ctrl{margin-left:auto;display:flex;align-items:center;gap:6px}
+.sim-ctrl button{font-size:12px;color:var(--dim);border:1px solid var(--line2);border-radius:7px;padding:6px 9px;transition:.15s;background:#0d0e11}
+.sim-ctrl button:hover{color:var(--ink);border-color:var(--dim2)}
+.sim-ctrl button.on{color:#f0a591;background:var(--acc-soft);border-color:rgba(224,105,79,.35)}
+.sim-ctrl .ex{margin-left:6px;border-color:transparent;color:var(--dim2)}
+.sim-ctrl .ex:hover{border-color:var(--line2)}
+
+.sim-meta{display:flex;align-items:center;gap:22px;padding:14px 0 10px;flex-wrap:wrap}
+.age{font-family:var(--serif);font-size:30px;letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}
+.age small{font-family:var(--sans);font-size:12px;color:var(--dim2);margin-left:5px;letter-spacing:.02em}
+.year{font-size:12px;color:var(--dim2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.meters{display:flex;gap:16px;margin-left:auto;flex-wrap:wrap}
+.meter{min-width:96px}
+.meter span{display:block;font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--dim2);margin-bottom:5px}
+.meter i{display:block;height:3px;background:#26272c;border-radius:3px;overflow:hidden}
+.meter b{display:block;height:100%;width:0;border-radius:3px;background:var(--dim);transition:width .5s linear,background .4s}
+.meter.sym b{background:var(--acc)}
+.meter.ctl b{background:var(--ok)}
+.meter.life b{background:#b9b4a8}
+@media(max-width:660px){.meters{width:100%;margin-left:0;gap:10px}.meter{flex:1;min-width:0}}
+.track{height:1px;background:var(--line);position:relative;margin-bottom:6px}
+.track i{position:absolute;left:0;top:-1px;height:3px;width:0;background:var(--acc);opacity:.75;transition:width .2s linear}
+.scrub{font-size:11px;color:var(--dim2);display:flex;justify-content:space-between;padding:4px 0 8px;font-variant-numeric:tabular-nums}
+
+.feed{flex:1;overflow-y:auto;padding:8px 4px 120px;scrollbar-width:thin}
+.feed::-webkit-scrollbar{width:8px}
+.feed::-webkit-scrollbar-thumb{background:#24252a;border-radius:8px}
+.ev{display:grid;grid-template-columns:104px 1fr;gap:16px;padding:13px 0;border-bottom:1px solid #191a1e;animation:evIn .5s ease}
+@keyframes evIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.ev .m{font-size:11.5px;color:var(--dim2);font-variant-numeric:tabular-nums;padding-top:3px;line-height:1.4}
+.ev p{font-size:14.5px;line-height:1.62;color:#d3d0c9}
+.ev.bad p{color:#eee}
+.ev.bad .m{color:var(--acc)}
+.ev.good .m{color:var(--ok)}
+.ev.note p{font-size:13.5px;color:var(--dim);font-style:italic}
+.ev.big p{font-family:var(--serif);font-size:20px;line-height:1.45;letter-spacing:-.01em;color:var(--ink)}
+.ev.big{padding:22px 0}
+@media(max-width:560px){
+  .ev{grid-template-columns:1fr;gap:3px;padding:11px 0}
+  .ev .m{font-size:11px}
+  .ev.big p{font-size:17px}
+  .sim-inner{padding:0 16px}
+}
+
+/* decision panel */
+.panel{position:absolute;left:0;right:0;bottom:0;padding:0 16px 16px;display:none;pointer-events:none}
+.panel.on{display:block;pointer-events:auto;animation:panelIn .38s cubic-bezier(.2,.7,.3,1)}
+@keyframes panelIn{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+.panel .pc{max-width:760px;margin:0 auto;background:linear-gradient(180deg,#1a1b21,#121318);border:1px solid #35373f;border-radius:16px;padding:20px 22px;box-shadow:0 -20px 60px -30px #000,0 30px 60px -40px #000;max-height:76vh;overflow-y:auto}
+.panel .kick{font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--acc);margin-bottom:8px;font-variant-numeric:tabular-nums}
+.panel h3{font-size:clamp(19px,3vw,24px);line-height:1.25;margin-bottom:8px}
+.panel .pt{font-size:13.5px;color:var(--dim);line-height:1.6;margin-bottom:15px}
+.opts{display:grid;gap:8px}
+.opt{display:flex;gap:12px;align-items:flex-start;text-align:left;border:1px solid var(--line2);border-radius:10px;padding:12px 14px;background:#0e0f12;transition:.16s}
+.opt:hover{border-color:var(--acc);background:#171210;transform:translateX(2px)}
+.opt .k{font-size:11px;color:var(--dim2);border:1px solid var(--line2);border-radius:4px;width:19px;height:19px;display:grid;place-items:center;flex:0 0 auto;margin-top:1px}
+.opt:hover .k{border-color:rgba(224,105,79,.5);color:var(--acc)}
+.opt .tx{display:block}
+.opt .tx strong{display:block;font-size:14px;font-weight:500;line-height:1.4}
+.opt .tx em{display:block;font-style:normal;font-size:12px;color:var(--dim);margin-top:2px;line-height:1.45}
+.panel .pn{font-size:11.5px;color:var(--dim2);margin-top:12px}
+
+/* end screen */
+.end{border:1px solid var(--line2);border-radius:16px;background:linear-gradient(180deg,#15161b,#0f1013);padding:26px;margin:26px 0 10px;animation:evIn .6s ease}
+.end .kick{font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--dim2);margin-bottom:14px}
+.end h2{font-size:clamp(28px,6vw,44px);line-height:1.06;letter-spacing:-.03em}
+.end h2 em{font-style:italic;color:var(--acc)}
+.end .cause{color:var(--dim);font-size:14px;margin-top:12px;max-width:36em}
+.end .stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:22px}
+.end .stat-row div{background:#0e0f12;padding:12px 14px}
+.end .stat-row b{display:block;font-family:var(--serif);font-size:22px;font-variant-numeric:tabular-nums}
+.end .stat-row span{display:block;font-size:11px;color:var(--dim2);margin-top:2px;letter-spacing:.04em}
+@media(max-width:520px){.end .stat-row{grid-template-columns:1fr 1fr}}
+.end h4{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim2);margin:30px 0 12px;font-family:var(--sans)}
+.recap{border-top:1px solid var(--line)}
+.recap div{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:9px 0;border-bottom:1px solid #1a1b1f;font-size:12.5px}
+.recap span{color:var(--dim2)}
+.recap b{font-weight:400;color:#cfcbc4;text-align:right}
+.neigh{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:560px){.neigh{grid-template-columns:1fr}}
+.neigh article{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:#0e0f12}
+.neigh h5{margin:0;font-family:var(--sans);font-size:12.5px;font-weight:500;color:var(--ink)}
+.neigh p{font-size:12px;color:var(--dim);margin-top:4px;line-height:1.5}
+.neigh .ag{font-family:var(--serif);font-size:16px;color:#d8d4cc;margin-top:6px}
+.facts{display:grid;gap:8px}
+.facts div{display:flex;gap:14px;align-items:baseline;border-bottom:1px solid #1a1b1f;padding-bottom:8px}
+.facts b{font-family:var(--serif);font-size:19px;color:var(--ink);white-space:nowrap;font-variant-numeric:tabular-nums}
+.facts span{font-size:12.5px;color:var(--dim);line-height:1.5}
+.end-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
+.words{width:100%;background:#0b0c0e;border:1px solid var(--line2);border-radius:10px;color:var(--ink);padding:11px 13px;font:inherit;font-size:13.5px;resize:vertical;min-height:64px;margin-top:6px}
+.words:focus{outline:2px solid rgba(224,105,79,.45);outline-offset:1px}
+.fineprint{font-size:11.5px;color:var(--dim2);line-height:1.65;margin-top:24px;border-top:1px solid var(--line);padding-top:14px}
+.end .help{border:1px solid #3a2a24;background:rgba(224,105,79,.06);border-radius:10px;padding:12px 14px;font-size:12.5px;color:#cfc7c2;margin-top:18px;line-height:1.55}
+
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  html{scroll-behavior:auto}
+}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap in">
+    <div class="brand"><b>Один диагноз</b><span>симуляция болезни · v0.1 · 16+</span></div>
+    <nav>
+      <a href="#start">Начать</a>
+      <a href="#how">Как это устроено</a>
+      <a href="#list">Болезни</a>
+      <a href="#help">Помощь</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero wrap">
+    <p class="kicker">Симуляция одной болезни · реальная статистика · около 20 минут</p>
+    <h1><em>3</em><span>из 4</span></h1>
+    <p class="lead">Три из четырёх смертей в мире приходятся на болезни, которые длятся годами: сердце, рак, диабет, лёгкие. <b>41 миллион человек в год.</b> Почти никто из них не выбирал, чем заболеть — так же, как не выбирают, где родиться.</p>
+    <p class="after">Здесь вы получаете один диагноз по реальной статистике — пол, возраст, страну и вероятности — и проживаете его до конца. С паузами там, где жизнь действительно делает выбор.</p>
+
+    <div class="counters" aria-label="Счётчики в реальном времени">
+      <div>
+        <b id="c1" class="mono">0</b>
+        <span>новых случаев рака в мире с тех пор, как вы открыли страницу</span>
+      </div>
+      <div>
+        <b id="c2" class="mono">0</b>
+        <span>смертей от рака за это же время</span>
+      </div>
+      <div>
+        <b id="c3" class="mono">0</b>
+        <span>смертей от длительных болезней за это же время</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap sec" id="start">
+    <div class="setup">
+      <div class="hd">
+        <h2>Если бы диагноз поставили сейчас</h2>
+        <p>Пол, возраст и страну определяет статистика. Вы можете поменять три вещи — и начать.</p>
+      </div>
+      <div class="bd">
+        <div class="fields">
+          <div class="field">
+            <label>Пол</label>
+            <div class="seg" id="segSex">
+              <button data-v="female">Женский</button>
+              <button data-v="male">Мужской</button>
+              <button data-v="random" class="on">Случайно</button>
+            </div>
+          </div>
+          <div class="field">
+            <label>Возраст начала</label>
+            <div class="seg" id="segAge">
+              <button data-v="stat" class="on">По статистике</button>
+              <button data-v="young">Молодой</button>
+              <button data-v="old">Пожилой</button>
+            </div>
+          </div>
+          <div class="field">
+            <label>Страна и доступ к помощи</label>
+            <select id="selCountry" aria-label="Страна"></select>
+          </div>
+        </div>
+        <div class="fields" style="grid-template-columns:1fr">
+          <div class="field">
+            <label>Болезнь</label>
+            <select id="selDisease" aria-label="Болезнь"></select>
+          </div>
+        </div>
+        <div class="toggles">
+          <label class="tg"><input type="checkbox" id="tgAuto"><i></i>Авторежим — просто наблюдать</label>
+          <label class="tg"><input type="checkbox" id="tgSoft"><i></i>Убрать тяжёлые сцены</label>
+          <label class="tg"><input type="checkbox" id="tgMusic"><i></i>Тихая музыка</label>
+        </div>
+        <div class="actions">
+          <button class="btn" id="btnStart">Прожить этот диагноз</button>
+          <button class="btn ghost" id="btnRandom">Случайная жизнь</button>
+          <span class="micro" id="startHint">16 болезней · 5 пауз · ничего не отправляется на сервер</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap sec" id="how">
+    <h2>Как это устроено</h2>
+    <p class="sub">Одна жизнь с одним диагнозом. Не игра в выбор — попытка прожить статистику изнутри.</p>
+    <div class="cards3">
+      <article>
+        <h3>Диагноз не выбирают</h3>
+        <p>Болезнь выпадает по реальной частоте: диабет и депрессия — часто, рассеянный склероз и муковисцидоз — редко. Пол, возраст начала и страна тоже берутся из статистики, а не из ваших пожеланий.</p>
+      </article>
+      <article>
+        <h3>Пауза</h3>
+        <p>В пяти местах время останавливается: первые симптомы, обследование, начало лечения, близкие и работа, последний отрезок. Каждый выбор меняет то, что будет дальше, — но не отменяет статистику.</p>
+      </article>
+      <article>
+        <h3>Рядом идут другие</h3>
+        <p>В тот же день такой же диагноз слышат тысячи людей. Четверо из них проживают его вместе с вами — в других странах и с разным доступом к помощи. Никто из них этого не выбирал.</p>
+      </article>
+    </div>
+
+    <div class="prose">
+      <p>Продолжительность жизни с болезнью, вероятность ремиссии и тяжесть осложнений зависят от доступа к медицине — и это самая жестокая часть статистики. Одна и та же болезнь в стране с бесплатной помощью и в стране, где лечение оплачивают из кармана, заканчивается по-разному. Поэтому в симуляции страна влияет сильнее, чем любой ваш выбор.</p>
+      <p>Всё, что происходит, — модель. Она построена на опубликованных оценках, но не предсказывает ничью конкретную жизнь. <em>Здесь нельзя умереть от того, что вы «плохо играли»: можно только увидеть, как статистика распределяет шансы.</em></p>
+    </div>
+  </section>
+
+  <section class="wrap sec" id="list">
+    <h2>Болезни в симуляции</h2>
+    <p class="sub">Шестнадцать состояний — от самых частых в мире до редких. Частота выпадения соответствует распространённости.</p>
+    <table class="tbl">
+      <thead>
+        <tr><th>Болезнь</th><th class="hide-s">Начало</th><th>Чем обычно заканчивается</th></tr>
+      </thead>
+      <tbody id="diseaseRows"></tbody>
+    </table>
+    <p class="micro" style="margin-top:14px">Цифры — приблизительные оценки ВОЗ, GBD, GLOBOCAN и профильных организаций. Округлены и не заменяют консультацию врача.</p>
+  </section>
+
+  <section class="wrap sec" id="past">
+    <div class="past" id="pastBox">
+      <h2 style="font-size:22px">Прожитые здесь жизни</h2>
+      <p class="sub">Сохраняются только в этом браузере. <button id="btnClearLives" style="color:var(--dim);text-decoration:underline;font-size:13px">Очистить</button></p>
+      <div class="plist" id="pastList"></div>
+    </div>
+  </section>
+
+  <section class="wrap sec" id="help">
+    <h2>Тяжёлые темы</h2>
+    <div class="safety">
+      <h3>Здесь умирают. Так же часто, как в реальной статистике</h3>
+      <p>В симуляции есть смерть, тяжёлые диагнозы, боль, долги и отчаяние. Сцены не показываются подробно, а флажок «Убрать тяжёлые сцены» смягчает формулировки. Если вам сейчас тяжело, симуляция может подождать.</p>
+      <p>Если вы думаете о том, чтобы причинить себе вред, или просто больше не справляетесь — это не то, что нужно переживать в одиночку.</p>
+      <div class="lines">
+        <div><b>Россия:</b> 8-800-2000-122 — бесплатно, круглосуточно</div>
+        <div><b>Экстренно:</b> 112</div>
+        <div><b>Мир:</b> findahelpline.com — линии в 130+ странах</div>
+        <div><b>Не один:</b> скажите вслух близкому человеку</div>
+      </div>
+    </div>
+    <p class="micro" style="margin-top:20px;max-width:44em">Симуляция образовательная: она не ставит диагноз, не назначает лечение и не заменяет врача. Если вас что-то беспокоит в собственном здоровье — это повод пойти к специалисту, а не прожить это здесь.</p>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>«Один диагноз» — симуляция болезни. Цифры: ВОЗ (неинфекционные заболевания, 2019–2023), GLOBOCAN / IARC (2022), GBD 2019, IDF, UNAIDS, MSIF. Модель течения болезни — упрощение, а не прогноз.</div>
+    <div class="frow">
+      <span>v0.1</span>
+      <span>Ничего не отправляется на сервер</span>
+      <a href="#help">Помощь рядом</a>
+      <a href="#start">Начать заново</a>
+    </div>
+  </div>
+</footer>
+
+<div class="sim" id="sim" role="dialog" aria-modal="true" aria-label="Симуляция болезни">
+  <div class="sim-inner">
+    <div class="sim-top">
+      <div class="sim-name"><span id="simDisease">—</span><small id="simPerson">—</small></div>
+      <div class="sim-ctrl">
+        <button id="btnPause" title="Пауза (пробел)">Пауза</button>
+        <button class="spd on" data-spd="1">1×</button>
+        <button class="spd" data-spd="2">2×</button>
+        <button class="spd" data-spd="4">4×</button>
+        <button id="btnExit" class="ex">Выйти</button>
+      </div>
+    </div>
+    <div class="sim-meta">
+      <div class="age"><span id="simAge">0</span><small id="simAgeWord">лет</small></div>
+      <div class="year" id="simYear">2026</div>
+      <div class="meters">
+        <div class="meter sym"><span>Симптомы</span><i><b id="mSym"></b></i></div>
+        <div class="meter ctl"><span>Контроль</span><i><b id="mCtl"></b></i></div>
+        <div class="meter life"><span>Жизнь</span><i><b id="mLife"></b></i></div>
+      </div>
+    </div>
+    <div class="track"><i id="simBar"></i></div>
+    <div class="scrub"><span id="scrubL">начало</span><span id="scrubR"></span></div>
+    <div class="feed" id="feed"></div>
+  </div>
+  <div class="panel" id="panel"><div class="pc" id="panelCard"></div></div>
+</div>
+
+<script>
+/* =====================================================================
+   1. ДАННЫЕ. Цифры — приблизительные опубликованные оценки: ВОЗ, GBD 2019,
+   GLOBOCAN 2022, IDF 2021, UNAIDS 2023, MSIF 2020.
+   ===================================================================== */
+const NOW_YEAR = 2026;
+
+const COUNTRIES = [
+  {id:'ru', name:'Россия',          access:.63, oop:.40, life:73},
+  {id:'de', name:'Германия',        access:.93, oop:.12, life:81},
+  {id:'us', name:'США',             access:.90, oop:.92, life:79},
+  {id:'gb', name:'Великобритания',  access:.87, oop:.10, life:81},
+  {id:'fr', name:'Франция',         access:.92, oop:.10, life:83},
+  {id:'jp', name:'Япония',          access:.95, oop:.22, life:84},
+  {id:'pl', name:'Польша',          access:.76, oop:.28, life:78},
+  {id:'br', name:'Бразилия',        access:.60, oop:.55, life:76},
+  {id:'cn', name:'Китай',           access:.63, oop:.55, life:79},
+  {id:'in', name:'Индия',           access:.42, oop:.90, life:71},
+  {id:'id', name:'Индонезия',       access:.40, oop:.70, life:72},
+  {id:'mx', name:'Мексика',         access:.55, oop:.62, life:75},
+  {id:'eg', name:'Египет',          access:.48, oop:.75, life:74},
+  {id:'ke', name:'Кения',           access:.30, oop:.85, life:67},
+  {id:'za', name:'ЮАР',             access:.45, oop:.75, life:65},
+  {id:'ng', name:'Нигерия',         access:.20, oop:.95, life:55}
+];
+
+const DISEASES = [
+{
+  id:'breast', name:'Рак молочной железы', group:'Онкология', only:'female',
+  onset:[32,55,84], weight:40, yearly:2300000, course:'curable',
+  years:[2.5,7,20], cure:[.20,.60,.90], cost:.85, delayPenalty:.45,
+  tagline:'Примерно одна из восьми женщин в странах с высоким доходом услышит этот диагноз за свою жизнь.',
+  symptoms:['уплотнение в груди','тянет под мышкой','кожа груди стала как корка','выделения из соска'],
+  treat:['операция','курс химиотерапии','гормональная терапия'],
+  late:['метастазы в костях','одышка при ходьбе','сильная слабость'],
+  onsetLine:'В душе, случайно, вы находите под пальцами то, чего раньше не было. Маленькое, твёрдое, не двигается.',
+  diagLine:'Маммография, биопсия, десять дней ожидания. Гистология: злокачественная опухоль. Врач говорит быстро и по делу, а вы слышите только слово «рак».',
+  beats:['Вы учитесь жить по циклу: капельница, неделя слабости, неделя почти нормальной жизни.',
+         'Волосы выпали. Вы покупаете платок и удивляетесь, как идёт.',
+         'Контрольный снимок чист. Врач говорит: «Пока всё хорошо». Слово «пока» теперь всегда рядом.'],
+  death:'прогрессирующая опухоль',
+  arc:'чаще всего излечима при раннем обнаружении',
+  facts:[['2,3 млн','новых случаев в год — самый частый рак у женщин (GLOBOCAN, 2022)'],
+         ['670 тыс.','смертей в год; выживаемость сильно зависит от страны']]
+},
+{
+  id:'diabetes', name:'Сахарный диабет 2 типа', group:'Обмен веществ',
+  onset:[26,48,82], weight:130, yearly:8000000, course:'managed',
+  years:[12,24,32], cure:[0,0,0], cost:.45, delayPenalty:.18,
+  tagline:'Болезнь, с которой можно прожить тридцать лет — если держать её в узде каждый день.',
+  symptoms:['постоянная жажда','усталость к вечеру','долго заживает ранка на ноге','зрение расплывается'],
+  treat:['метформин','диета и ходьба','контроль сахара каждый день'],
+  late:['немеют стопы','одна операция на стопе, потом вторая','гемодиализ дважды в неделю'],
+  onsetLine:'Вы пьёте воду стаканами и всё равно хотите пить. К вечеру ноги гудят, а ранка на пальце заживает третью неделю.',
+  diagLine:'Анализ крови: гликированный гемоглобин 8,9%. «Это диабет второго типа», — говорит врач и добавляет, что с этим живут десятилетиями.',
+  beats:['Вы научились считать хлебные единицы быстрее, чем считали деньги.',
+         'Вечерний разговор с эндокринологом: поднять дозу или добавить второй препарат.',
+         'Стопа немеет всё сильнее. Врач говорит слово «нейропатия» и просит беречь ноги.'],
+  death:'осложнения диабета',
+  arc:'десятилетия под контролем; иначе — сосуды, почки, стопы',
+  facts:[['537 млн','взрослых живут с диабетом (IDF, 2021)'],
+         ['6,7 млн','смертей в год связаны с диабетом']]
+},
+{
+  id:'cad', name:'Ишемическая болезнь сердца', group:'Сердце и сосуды', skew:.35,
+  onset:[34,62,88], weight:120, yearly:18000000, course:'acute',
+  years:[3,9,18], cure:[0,0,0], cost:.80, delayPenalty:.55,
+  tagline:'Самая частая причина смерти в мире. Начинается с одной минуты на лестнице.',
+  symptoms:['давит за грудиной','одышка на лестнице','тяжесть в левой руке','холодный пот'],
+  treat:['аспирин и статины','стентирование','шунтирование'],
+  late:['одышка в покое','отёки на ногах','сердечная недостаточность'],
+  onsetLine:'На четвёртом этаже вы останавливаетесь. Грудную клетку сдавливает так, будто на неё встали коленом; через минуту отпускает.',
+  diagLine:'На кардиограмме — изменения. Вас оставляют в больнице и говорят про сужение артерии на семьдесят процентов.',
+  beats:['Вы носите нитроглицерин в кармане, как ключи.',
+         'Полгода без приступов. Вы почти поверили, что обошлось.',
+         'Врач предлагает операцию и честно называет шансы.'],
+  death:'инфаркт',
+  arc:'стент, шунт или инфаркт — решают часы',
+  facts:[['17,9 млн','смертей от болезней сердца и сосудов в год (ВОЗ)'],
+         ['41 млн','смертей от неинфекционных болезней ежегодно']]
+},
+{
+  id:'stroke', name:'Инсульт', group:'Мозг и сосуды', skew:.48,
+  onset:[32,68,90], weight:55, yearly:12200000, course:'acute',
+  years:[.3,3,12], cure:[0,0,0], cost:.75, delayPenalty:.60,
+  tagline:'Инсульт не предупреждает. Всё решают первые часы — и то, где вы в них оказались.',
+  symptoms:['внезапно онемела рука','перекосило лицо','не получается сказать слово','сильно кружится голова'],
+  treat:['тромболизис в первые часы','реабилитация','препараты от давления'],
+  late:['не слушается левая рука','трудно подобрать слова','нужна помощь в быту'],
+  onsetLine:'Утром вы не можете сжать правую руку в кулак. Ложка падает. Слова выходят не те, что вы хотите сказать.',
+  diagLine:'Компьютерная томография. Врач говорит: «Ишемический инсульт» — и считает часы, а не дни.',
+  beats:['Вы заново учитесь держать ложку. Первые три недели — самое трудное.',
+         'Речь возвращается кусками. Иногда вы замолкаете на середине фразы и злитесь на себя.',
+         'Вы выходите во двор с палкой. Сосед здоровается — значит, узнал.'],
+  death:'последствия инсульта',
+  arc:'выжившие часто с потерей речи или движения',
+  facts:[['12,2 млн','новых инсультов в год (GBD, 2019)'],
+         ['6,5 млн','смертей в год — второй по частоте причиной в мире']]
+},
+{
+  id:'copd', name:'ХОБЛ', group:'Лёгкие', skew:.45,
+  onset:[40,66,88], weight:55, yearly:8000000, course:'progressive',
+  years:[4,9,17], cure:[0,0,0], cost:.50, delayPenalty:.30,
+  tagline:'Болезнь, которую почти всегда вызывает то, что человек делал своими руками.',
+  symptoms:['кашель курильщика по утрам','одышка при ходьбе','свист в груди','мокрота'],
+  treat:['бронхолитики','ингаляторы','кислород дома'],
+  late:['одышка в покое','частые обострения','сердечная слабость'],
+  onsetLine:'Вы поднимаетесь на свой этаж и понимаете, что дышите ртом. Кашель по утрам был всегда, но теперь он не проходит к обеду.',
+  diagLine:'Спирометрия. «Вы выдыхаете сорок процентов от нормы», — говорит врач и спрашивает, сколько лет вы курите.',
+  beats:['Ингалятор теперь в кармане куртки, рядом с ключами.',
+         'Вы бросили курить на четырнадцатом году. Врач сказал: «Лучше поздно, чем никогда» — и это правда.',
+         'Зимой каждое обострение отнимает по кусочку лёгких.'],
+  death:'дыхательная недостаточность',
+  arc:'медленное удушье с обострениями',
+  facts:[['3,5 млн','смертей в год (ВОЗ)'],
+         ['≈5%','всех смертей в мире приходится на ХОБЛ']]
+},
+{
+  id:'asthma', name:'Бронхиальная астма', group:'Лёгкие', skew:.55,
+  onset:[4,22,62], weight:60, yearly:8000000, course:'managed',
+  years:[6,22,42], cure:[0,0,0], cost:.35, delayPenalty:.22,
+  tagline:'С ней можно бегать марафоны — или задохнуться из-за отсутствия ингалятора за два доллара.',
+  symptoms:['свистящее дыхание','приступы ночью','сжимает грудь','кашель после бега'],
+  treat:['ингалятор-бронхолитик','гормональный ингалятор','план действий на случай приступа'],
+  late:['ночные приступы','пропуски школы и работы','редкие тяжёлые приступы'],
+  onsetLine:'Ночью вы просыпаетесь от того, что не можете выдохнуть до конца. Свист слышно даже из соседней комнаты.',
+  diagLine:'Пикфлоуметрия и проба с бронхолитиком. «Это астма, — говорит врач. — С этим живут обычной жизнью, если держать под контролем».',
+  beats:['Ингалятор всегда в рюкзаке. Друзья привыкли, что вы проверяете карман перед выходом.',
+         'Полгода без ночных приступов. Вы почти забыли, каково это.',
+         'Приступ в чужом городе. Вы находите аптеку и понимаете, как много зависит от того, где ты находишься.'],
+  death:'тяжёлый приступ',
+  arc:'контролируется; смерти почти всегда предотвратимы',
+  facts:[['262 млн','человек живут с астмой (ВОЗ)'],
+         ['большинство','смертей приходится на страны с низким доходом']]
+},
+{
+  id:'depression', name:'Депрессия', group:'Психика', skew:.67, help:true,
+  onset:[14,28,66], weight:150, yearly:20000000, course:'relapsing',
+  years:[8,25,45], cure:[0,0,0], cost:.30, delayPenalty:.22,
+  tagline:'Самая распространённая болезнь в мире — и та, которую чаще всего лечат молчанием.',
+  symptoms:['нет сил встать утром','ничего не радует','сбился сон','трудно думать и говорить'],
+  treat:['разговорная терапия','антидепрессанты','режим сна и движения'],
+  late:['месяцы в постели','потеря работы','мысли о том, чтобы исчезнуть'],
+  onsetLine:'Вы просыпаетесь и несколько минут смотрите в потолок. Раньше было любопытно, что будет дальше; теперь — нет.',
+  diagLine:'Психиатр задаёт вопросы, на которые трудно отвечать, и говорит: «Это депрессия. Это лечится».',
+  beats:['Вы учитесь замечать день, когда стало легче, — и не пугаться, когда снова хуже.',
+         'Таблетки работают не сразу. Врач просит не бросать на третьей неделе.',
+         'Первый вечер, когда вы смеётесь по-настоящему. Вы запоминаете его.'],
+  death:'осложнения длительной депрессии',
+  arc:'рецидивы; с лечением — возвращение к жизни',
+  facts:[['280 млн','человек живут с депрессией (ВОЗ, 2023)'],
+         ['≈75%','в странах с низким и средним доходом не получают лечения']]
+},
+{
+  id:'hiv', name:'ВИЧ', group:'Инфекции', skew:.45,
+  onset:[18,28,50], weight:30, yearly:1300000, course:'managed',
+  years:[6,22,40], cure:[0,0,0], cost:.55, delayPenalty:.40,
+  tagline:'Сегодня это хроническая болезнь. Но только там, где есть таблетки.',
+  symptoms:['температура, которая не проходит','увеличились лимфоузлы','потеря веса','ночная потливость'],
+  treat:['антиретровирусная терапия','регулярные анализы','защита партнёра'],
+  late:['оппортунистические инфекции','сильная потеря веса','истощение'],
+  onsetLine:'Три недели температуры, которую не объясняет ни один анализ. Ночью рубашка становится мокрой.',
+  diagLine:'Тест на ВИЧ. Через пятнадцать минут врач говорит результат и добавляет: «С этим сейчас живут до старости. Главное — начать терапию».',
+  beats:['Одна таблетка в день. Вирусная нагрузка падает до неопределяемой.',
+         'Вы решаете, кому сказать. Один друг отвечает: «И что?» — и это оказывается лучшим ответом.',
+         'Анализы стабильны шестой год. Врач говорит, что вы проживёте дольше многих без диагноза.'],
+  death:'осложнения ВИЧ',
+  arc:'контролируется терапией почти до нормы',
+  facts:[['39,9 млн','человек живут с ВИЧ (UNAIDS, 2023)'],
+         ['0,6 млн','смертей в год — вдвое меньше, чем в 2010-м']]
+},
+{
+  id:'tb', name:'Туберкулёз', group:'Инфекции', skew:.45,
+  onset:[15,36,78], weight:40, yearly:10800000, course:'curable',
+  years:[.7,1.3,3], cure:[.50,.86,.96], cost:.18, delayPenalty:.35,
+  tagline:'Излечимая болезнь, которая убивает 1,25 миллиона человек в год — почти всех в бедных странах.',
+  symptoms:['кашель больше трёх недель','пот ночью','температура к вечеру','кровь в мокроте'],
+  treat:['четыре препарата шесть месяцев','анализы каждый месяц','изоляция первые недели'],
+  late:['каверны в лёгких','лекарственная устойчивость','кровохарканье'],
+  onsetLine:'Кашель третий месяц. Вы уже не замечаете его, пока кто-то не отодвигается в транспорте.',
+  diagLine:'Рентген, мокрота, проба. «Туберкулёз, — говорит врач. — Шесть месяцев лечения, и вы будете здоровы. Курс нельзя прерывать».',
+  beats:['Четыре таблетки утром натощак. Первые недели — тошнота и оранжевая моча.',
+         'Месяц третий. Кашель ушёл. Вы впервые задумываетесь, не бросить ли таблетки.',
+         'Мокрота чистая. Вас снимают с учёта — редкое слово «вылечен».'],
+  death:'туберкулёз лёгких',
+  arc:'излечима за шесть месяцев, если курс не прерывать',
+  facts:[['10,8 млн','заболевших в год (ВОЗ, 2023)'],
+         ['1,25 млн','смертей в год — больше, чем от любой другой инфекции']]
+},
+{
+  id:'parkinson', name:'Болезнь Паркинсона', group:'Мозг', skew:.42,
+  onset:[40,64,88], weight:20, yearly:1000000, course:'progressive',
+  years:[5,10,16], cure:[0,0,0], cost:.55, delayPenalty:.12,
+  tagline:'Болезнь, при которой лекарство работает лучше всего — и со временем работает хуже.',
+  symptoms:['дрожит правая рука в покое','трудно застёгивать пуговицы','почерк стал мелким','не получается начать шаг'],
+  treat:['леводопа','физическая терапия','нейрохирургия при тяжёлых формах'],
+  late:['застывания при ходьбе','падения','трудно глотать'],
+  onsetLine:'Вы замечаете, что правая рука дрожит, когда вы просто сидите. Потом — что пуговицы стали какими-то мелкими.',
+  diagLine:'Невролог просит пройти по коридору, поводить пальцем, написать фразу. «Похоже на болезнь Паркинсона», — говорит он.',
+  beats:['Таблетка возвращает вас к себе на два-три часа. Вы начинаете считать время по ней.',
+         'Вы перестали стесняться дрожи. Окружающие перестали спрашивать.',
+         'Поздно вечером вы застываете на пороге и ждёте, когда тело снова станет вашим.'],
+  death:'осложнения болезни Паркинсона',
+  arc:'медленное движение; деменция на поздних стадиях',
+  facts:[['8,5 млн','человек живут с болезнью Паркинсона (GBD, 2019)'],
+         ['в 2 раза','больше случаев, чем 25 лет назад']]
+},
+{
+  id:'alzheimer', name:'Болезнь Альцгеймера', group:'Мозг', skew:.65,
+  onset:[56,76,94], weight:45, yearly:10000000, course:'progressive',
+  years:[4,8,13], cure:[0,0,0], cost:.90, delayPenalty:.10,
+  tagline:'Самая дорогая болезнь мира: она забирает не только память, но и всех, кто рядом.',
+  symptoms:['забыли, зачем пришли на кухню','путаются имена','потерялись в знакомом районе','перестали узнавать близких'],
+  treat:['лекарства, замедляющие прогрессирование','дневной центр','поддержка семьи'],
+  late:['нужен уход круглосуточно','не узнаёте близких','трудно глотать'],
+  onsetLine:'Вы дважды возвращаетесь в комнату, чтобы вспомнить, зачем пришли. Список покупок остался дома — вы держали его в руке.',
+  diagLine:'Тесты на память, МРТ, разговоры с родственниками. Через полгода врач называет это словом: деменция, вероятно альцгеймеровского типа.',
+  beats:['Вы пишете записки себе и не всегда понимаете, что на них написано.',
+         'Семья делает вид, что ничего не изменилось. Вы цените это больше всего.',
+         'Днём с вами кто-то рядом. Вы уже не помните, кто именно.'],
+  death:'деменция',
+  arc:'долгое прощание; четыре–тринадцать лет',
+  facts:[['55 млн','человек живут с деменцией (ВОЗ)'],
+         ['10 млн','новых случаев в год']]
+},
+{
+  id:'ms', name:'Рассеянный склероз', group:'Мозг', skew:.72,
+  onset:[18,32,56], weight:15, yearly:100000, course:'relapsing',
+  years:[8,22,38], cure:[0,0,0], cost:.80, delayPenalty:.18,
+  tagline:'Болезнь молодых, которая у каждого идёт по-своему.',
+  symptoms:['немеет левая стопа','двоится в глазах','пропадает сила в ноге','сильная усталость от простого дела'],
+  treat:['гормоны в обострение','препараты, меняющие течение болезни','реабилитация'],
+  late:['ходьба с тростью','трудно удерживать мочу','руки плохо слушаются'],
+  onsetLine:'Утром левая стопа не чувствует пола. Через неделю проходит, и вы почти забываете об этом. Через год это повторяется.',
+  diagLine:'МРТ показывает очаги. Невролог говорит: «Рассеянный склероз» — и сразу добавляет, что болезнь очень разная у разных людей.',
+  beats:['Обострение приходит без предупреждения и уходит, оставляя после себя немного меньше вас.',
+         'Вы научились планировать жизнь с запасом на плохие недели.',
+         'Летом становится хуже: жара отнимает силы быстрее, чем болезнь.'],
+  death:'осложнения рассеянного склероза',
+  arc:'обострения и ремиссии; позже — трость',
+  facts:[['2,8 млн','человек живут с рассеянным склерозом (MSIF)'],
+         ['70%','случаев начинаются между 20 и 40 годами']]
+},
+{
+  id:'schizophrenia', name:'Шизофрения', group:'Психика', skew:.45, help:true,
+  onset:[16,24,45], weight:18, yearly:1200000, course:'relapsing',
+  years:[10,30,45], cure:[0,0,0], cost:.60, delayPenalty:.32,
+  tagline:'Одна из самых стигматизированных болезней мира — и одна из самых лечимых, если лечение доступно.',
+  symptoms:['трудно собрать мысли','кажется, что за вами следят','вы слышите голос, которого нет','перестали выходить из комнаты'],
+  treat:['антипсихотики','психотерапия и поддержка','помощь семье'],
+  late:['месяцы без лечения','потеря жилья и работы','тяжёлые обострения'],
+  onsetLine:'Вы перестаёте понимать, о чём говорят другие. Иногда мысль обрывается на середине и не возвращается.',
+  diagLine:'После нескольких недель, о которых вы помните обрывками, врач называет диагноз и говорит, что это лечится — но не одним курсом.',
+  beats:['Таблетки убирают голоса, но делают вас медленнее. Вы выбираете, что терпеть.',
+         'Вы снова работаете — не тем, чем хотели, но работаете.',
+         'Люди на улице смотрят странно. Вы уже не уверены, что они смотрят.'],
+  death:'осложнения психического расстройства',
+  arc:'обострения; с лечением — долгая жизнь',
+  facts:[['24 млн','человек живут с шизофренией (ВОЗ, 2022)'],
+         ['15 лет','— средняя потеря продолжительности жизни']]
+},
+{
+  id:'ra', name:'Ревматоидный артрит', group:'Суставы', skew:.74,
+  onset:[25,47,76], weight:30, yearly:1400000, course:'relapsing',
+  years:[10,22,35], cure:[0,0,0], cost:.70, delayPenalty:.20,
+  tagline:'Не «болезнь пожилых»: чаще всего начинается в 40–50, у женщин — в три раза чаще.',
+  symptoms:['болят пальцы по утрам','скованность до полудня','опухли суставы','усталость без причины'],
+  treat:['базисные препараты','биологическая терапия','упражнения для рук'],
+  late:['деформация кистей','трудно держать чашку','операции на суставах'],
+  onsetLine:'Утром пальцы не сгибаются. Вы греете руки под водой и только потом берёте чашку.',
+  diagLine:'Анализы на ревматоидный фактор, снимки кистей. «Начало правильное, — говорит ревматолог. — Если сейчас взять под контроль, суставы сохранятся».',
+  beats:['Утренняя скованность измеряется часами. Хороший день — когда меньше часа.',
+         'Вы меняете работу на ту, где руками работают меньше.',
+         'Ремиссия второй год. Вы забыли, что когда-то считали ложки по утрам.'],
+  death:'осложнения ревматоидного артрита',
+  arc:'ремиссии и деформация суставов',
+  facts:[['18 млн','человек живут с ревматоидным артритом (ВОЗ)'],
+         ['3 из 4','случаев — у женщин']]
+},
+{
+  id:'crohn', name:'Болезнь Крона', group:'Кишечник', skew:.55,
+  onset:[15,29,58], weight:12, yearly:100000, course:'relapsing',
+  years:[10,25,40], cure:[0,0,0], cost:.70, delayPenalty:.20,
+  tagline:'Болезнь, которая делает туалет центром планирования жизни.',
+  symptoms:['боль в правом боку','диарея месяцами','потеря веса','кровь в стуле'],
+  treat:['противовоспалительные препараты','биологическая терапия','операция на кишечнике'],
+  late:['свищи','несколько операций','короткий кишечник'],
+  onsetLine:'Живот болит справа, низко. Вы списываете на еду. Через месяц вы знаете, где находится каждый туалет в районе.',
+  diagLine:'Колоноскопия. Врач показывает снимок и говорит: «Болезнь Крона. Хроническая, но с ней живут».',
+  beats:['Вы знаете, что можно есть, а что нельзя. Список короче, чем хотелось бы.',
+         'Биологическая терапия стоит как подержанная машина. В некоторых странах — бесплатно.',
+         'Полгода ремиссии. Вы едите мороженое и почти не думаете о последствиях.'],
+  death:'осложнения болезни Крона',
+  arc:'обострения; иногда операции',
+  facts:[['>1 млн','человек в Северной Америке и Европе'],
+         ['самый быстрый','рост заболеваемости — у молодых взрослых']]
+},
+{
+  id:'cf', name:'Муковисцидоз', group:'Редкие болезни', skew:.5, child:true,
+  onset:[1,6,17], weight:3, yearly:40000, course:'progressive',
+  years:[5,20,38], cure:[0,0,0], cost:1, delayPenalty:.15,
+  tagline:'Болезнь, с которой рождаются. Каждый день — это лечение, и каждый день стоит того.',
+  symptoms:['кашель с густой мокротой','солёный вкус кожи','плохо набирает вес','частые пневмонии'],
+  treat:['ежедневная кинезиотерапия','ингаляции и антибиотики','трансплантация лёгких'],
+  late:['одышка в покое','кислород дома','пересадка лёгких'],
+  onsetLine:'Вам полтора года, и вы ещё не говорите. Мать замечает, что ваша кожа на вкус солёная, а кашель не проходит месяцами.',
+  diagLine:'Потовая проба. Врач объясняет родителям: «Это муковисцидоз. Лечить придётся каждый день».',
+  beats:['Каждое утро начинается с получаса кинезиотерапии. Потом — школа, как у всех.',
+         'В больнице вы знакомитесь с такими же детьми. Кто-то уже не приходит.',
+         'Вам семнадцать, и вы знаете о своей болезни больше, чем участковый врач.'],
+  death:'дыхательная недостаточность',
+  arc:'лечение каждый день с рождения',
+  facts:[['1 из 3 000','новорождённых в Европе'],
+         ['40+ лет','медиана выживаемости там, где помощь доступна']]
+}
+];
+
+const GEN = {
+  calm:[
+    'Год проходит почти без изменений. «Почти» — лучшее слово для этой болезни.',
+    'Вы возвращаетесь к работе. Коллеги не спрашивают, и вы благодарны им за это.',
+    'Отпуск. Вы впервые за долгое время не думаете о болезни два дня подряд.',
+    'День рождения. Вы загадываете то, что уже нельзя купить.',
+    'Вы завели привычку записывать хорошие дни в блокнот.',
+    'Ссора из-за посуды, чей-то день рождения, ремонт. Жизнь идёт, как у всех.'
+  ],
+  bad:[
+    'Обострение. Три недели вы живёте от таблетки до таблетки.',
+    'Врач меняет схему и просит подождать месяц. Месяц длинный.',
+    'Вы срываетесь на близком человеке и потом долго извиняетесь.',
+    'Очередь в поликлинике. Полтора часа на пластиковом стуле.',
+    'Ночь без сна, потом день, в котором вы никому не нужны.'
+  ],
+  money:[
+    'Лечение стоит больше, чем вы рассчитывали. Вы берёте деньги в долг.',
+    'Страховка покрывает не всё. Разницу вы платите сами.',
+    'Вы отказываетесь от поездки, чтобы оплатить курс.'
+  ],
+  close:[
+    'Кто-то из близких остаётся с вами на ночь. Просто на всякий случай.',
+    'Мать звонит каждый день и спрашивает, как дела. Вы отвечаете: «нормально».',
+    'Друг приходит с супом и не задаёт вопросов. Это лучший визит за месяц.'
+  ]
+};
+
+const SOURCES = 'ВОЗ (неинфекционные заболевания, 2019–2023), GLOBOCAN / IARC (2022), GBD 2019, IDF 2021, UNAIDS 2023, MSIF 2020';
+
+/* =====================================================================
+   2. ДВИЖОК ЖИЗНИ. Модель, а не прогноз.
+   ===================================================================== */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const clamp = (v, a = 0, b = 100) => Math.max(a, Math.min(b, v));
+const clamp01 = v => clamp(v, 0, 1);
+
+function mulberry32(a) {
+  return function () {
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    let t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+const rnd = (r, a, b) => a + (b - a) * r();
+const pick = (r, arr) => arr[Math.min(arr.length - 1, Math.floor(r() * arr.length))];
+const interp3 = (v, x) => {
+  x = clamp01(x);
+  return x < .5 ? v[0] + (v[1] - v[0]) * (x * 2) : v[1] + (v[2] - v[1]) * ((x - .5) * 2);
+};
+function tri(r, a, m, b) {
+  const u = r();
+  return u < .5 ? a + (m - a) * Math.sqrt(2 * u) : b - (b - m) * Math.sqrt(2 * (1 - u));
+}
+function plural(n, one, few, many) {
+  const a = Math.abs(n) % 100, b = a % 10;
+  if (a > 10 && a < 20) return many;
+  if (b > 1 && b < 5) return few;
+  if (b === 1) return one;
+  return many;
+}
+const yearsRu = n => { n = Math.max(0, Math.round(n)); return n + ' ' + plural(n, 'год', 'года', 'лет'); };
+const fmtInt = n => new Intl.NumberFormat('ru-RU').format(Math.max(0, Math.floor(n)));
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---- содержание решений ---- */
+function decisionDef(life, id) {
+  const d = life.d, s = life.s, acute = d.course === 'acute', child = !!d.child;
+  const P = life.pending ? life.pending.n : 1;
+  const kick = `Пауза ${P} · ${Math.floor(NOW_YEAR + s.t)} · ${yearsRu(life.onset + s.t)}`;
+
+  if (id === 'early') {
+    return {
+      id, kick, title: 'Первые признаки',
+      text: child
+        ? `Родители замечают: ${d.symptoms[0]}. Участковый врач пожимает плечами и советует подождать.`
+        : `«${d.symptoms[0][0].toUpperCase() + d.symptoms[0].slice(1)}» не проходит. ${acute ? 'Это началось несколько минут назад.' : 'Прошло уже несколько недель.'}`,
+      note: 'Позднее обращение — одна из главных причин, по которым одна и та же болезнь в разных странах заканчивается по-разному.',
+      options: acute
+        ? [{k: 'now', label: 'Вызвать скорую сейчас', hint: 'Счёт идёт на минуты. Это самое неприятное и самое правильное.'},
+           {k: 'wait', label: 'Подождать до утра', hint: 'Может, пройдёт. Может, нет.'},
+           {k: 'web', label: 'Выпить обезболивающее и лечь', hint: 'Знакомое решение. Тело не согласится.'}]
+        : [{k: 'now', label: 'Идти к врачу на этой неделе', hint: 'Запись, очередь, анализы. Неприятно, но быстро.'},
+           {k: 'wait', label: 'Подождать — может, само пройдёт', hint: 'Ещё месяц. Потом ещё месяц.'},
+           {k: 'web', label: 'Сначала поискать в интернете', hint: 'Ночные форумы, страшные списки болезней, никакой ясности.'}]
+    };
+  }
+  if (id === 'tests') {
+    return {
+      id, kick, title: 'Обследование',
+      text: 'Врач предлагает дообследование. Оно стоит денег и времени — и показывает, с чем именно вы имеете дело.',
+      note: 'От точности обследования зависит почти весь дальнейший сценарий.',
+      options: [
+        {k: 'full', label: 'Пройти всё, что предложили', hint: 'Полная картина. Дороже и дольше.'},
+        {k: 'basic', label: 'Только обязательный минимум', hint: 'Быстрее и дешевле. Часть картины останется скрытой.'},
+        {k: 'none', label: 'Пока не хочу знать', hint: 'Отложить. Иногда это работает — недолго.'}
+      ]
+    };
+  }
+  if (id === 'treat') {
+    return {
+      id, kick, title: 'Лечение',
+      text: `Врач называет схему: ${d.treat[0]}, затем ${d.treat[1]}. И честно говорит, чего ждать.`,
+      note: 'Приверженность лечению — самый сильный фактор, который человек контролирует сам.',
+      options: [
+        {k: 'follow', label: 'Следовать схеме', hint: 'Регулярно, скучно, по протоколу.'},
+        {k: 'mix', label: 'Добавить народные средства', hint: 'Врач против. Знакомые — за.'},
+        {k: 'refuse', label: 'Отказаться от лечения', hint: 'Некоторое время это кажется свободой.'}
+      ]
+    };
+  }
+  if (id === 'disclose') {
+    return {
+      id, kick, title: 'Кому сказать',
+      text: 'Болезнь уже часть вашей жизни. О ней можно молчать — или разделить её с кем-то.',
+      note: 'Поддержка близких не лечит, но заметно меняет качество жизни.',
+      options: [
+        {k: 'tell', label: 'Рассказать близким и на работе', hint: 'Честно, с последствиями. Иногда — с неожиданной поддержкой.'},
+        {k: 'hide', label: 'Скрывать до последнего', hint: 'Никто не спросит. И никто не поможет.'},
+        {k: 'community', label: 'Найти тех, кто живёт с этим', hint: 'Люди, которые понимают без объяснений.'}
+      ]
+    };
+  }
+  return {
+    id, kick, title: 'Последний отрезок',
+    text: 'Болезнь больше не отступает. Врач говорит об этом прямо и спрашивает, чего вы хотите.',
+    note: 'Паллиативная помощь — это не отказ от лечения, а помощь другого рода: чтобы не болело и не было страшно.',
+    options: [
+      {k: 'keep', label: 'Продолжать лечение до конца', hint: 'Ещё курсы. Ещё надежда. Ещё цена.'},
+      {k: 'pall', label: 'Сосредоточиться на качестве жизни', hint: 'Меньше боли, больше тепла. Медицина рядом.'},
+      {k: 'trial', label: 'Попробовать экспериментальное лечение', hint: 'Шанс. Лотерея. Дорого.'}
+    ]
+  };
+}
+
+/* ---- одна жизнь ---- */
+class Life {
+  constructor(o) {
+    this.d = o.d; this.country = o.country; this.sex = o.sex; this.onset = o.onset;
+    this.seed = o.seed >>> 0; this.rng = mulberry32(this.seed);
+    this.auto = !!o.auto; this.soft = !!o.soft;
+    this.access = clamp01(this.country.access);
+    this.baseSpan = Math.max(.4, interp3(this.d.years, this.access) * rnd(this.rng, .88, 1.14));
+    this.cureP = clamp01(interp3(this.d.cure, this.access));
+    this.s = {
+      t: 0, prog: .03, control: .04,
+      quality: Math.round(clamp(68 + this.access * 16, 0, 100)),
+      money: Math.round(clamp(34 + this.access * 44 + rnd(this.rng, -6, 6), 0, 100)),
+      adherence: .35, disclosed: false, treated: false, cured: false, delay: .3, debt: false
+    };
+    this.events = []; this.choices = []; this.queue = []; this.pending = null;
+    this.nextBeat = .6; this.phase = rnd(this.rng, 0, 6.283);
+    this.mult = 1; this.done = false; this.endT = this.baseSpan;
+    this.used = new Set(); this.epilogue = false; this.outcome = 'dead';
+  }
+  get control() {
+    const s = this.s;
+    return clamp01(s.treated ? .26 + .44 * s.adherence + .30 * this.access : .03 + .10 * this.access);
+  }
+  push(kind, text) {
+    this.events.push({t: this.s.t, age: Math.max(0, Math.round(this.onset + this.s.t)), kind, text});
+  }
+  schedule(id, t) {
+    this.decCount = (this.decCount || 0) + 1;
+    this.queue.push({id, n: this.decCount, t: Math.max(t, this.s.t + .02)});
+    this.queue.sort((a, b) => a.t - b.t);
+    this.pending = this.queue[0] || null;
+  }
+  start() {
+    this.push('big', this.d.onsetLine);
+    this.schedule('early', .05);
+    this.s.t = 0;
+  }
+  update() {
+    const s = this.s, d = this.d, x = clamp01(s.t / Math.max(.3, this.endT));
+    let p;
+    if (s.cured) p = .05;
+    else if (d.course === 'progressive') p = Math.pow(x, 1.08);
+    else if (d.course === 'relapsing') p = clamp01(x * .78 + .10 * Math.sin(s.t * 1.7 + this.phase) + .06);
+    else if (d.course === 'managed') p = clamp01(x * (1.02 - .78 * s.control));
+    else p = clamp01(Math.pow(x, .95));
+    s.prog = p;
+    s.control = this.control;
+    s.quality = clamp(Math.round(88 - p * 52 - (s.money < 25 ? 11 : 0) + (s.disclosed ? 5 : 0) + (s.control > .55 ? 4 : 0)), 4, 100);
+  }
+  take(list) {
+    const free = list.filter(x => !this.used.has(x));
+    if (!free.length) { list.forEach(x => this.used.delete(x)); return pick(this.rng, list); }
+    const t = pick(this.rng, free); this.used.add(t); return t;
+  }
+  beat() {
+    const s = this.s, d = this.d;
+    if (s.cured) {
+      if (!this.epilogue && s.t > (this.curedAt || 0) + 1.6) {
+        this.epilogue = true;
+        this.push('good', this.soft
+          ? 'Проходит ещё год. Вы всё реже вспоминаете об этом времени.'
+          : 'Проходит ещё год. Вы всё реже вспоминаете об этом времени — и всё чаще удивляетесь, что оно было.');
+      }
+      return;
+    }
+    if (!s.treated && s.t > 1.1 && this.rng() < .45) {
+      this.push('bad', this.take([
+        'Вы откладываете визит. Болезнь не откладывается.',
+        'Знакомые говорят: «Ты плохо выглядишь». Вы отвечаете, что всё нормально.',
+        'Вы ищете причины не идти в больницу и находите их.'
+      ]));
+      return;
+    }
+    if (s.money < 22 && this.rng() < .55) {
+      this.push('bad', this.take(GEN.money));
+      s.quality = clamp(s.quality - 4, 0, 100); s.debt = true; return;
+    }
+    if (s.prog > .74) { this.push('bad', this.take([d.late[0], d.late[1], d.late[2], ...GEN.bad])); return; }
+    if (s.prog > .42) { this.push(this.rng() < .4 ? 'bad' : 'calm', this.take([d.beats[0], d.beats[1], d.beats[2], d.late[0], ...GEN.calm])); return; }
+    if (this.rng() < .3) { this.push('calm', this.take(GEN.close)); return; }
+    this.push('calm', this.take([d.beats[0], ...GEN.calm]));
+  }
+  resolve(id, idx) {
+    const d = this.d, s = this.s;
+    const def = decisionDef(this, id);
+    const opt = def.options[idx] || def.options[0];
+    this.choices.push({q: def.title, a: opt.label});
+    this.queue = this.queue.filter(q => q.id !== id);
+    if (this.auto) this.push('note', '— ' + opt.label);
+
+    if (id === 'early') {
+      if (idx === 0) {
+        s.delay = rnd(this.rng, .1, .3); this.mult *= 1.05; s.money = clamp(s.money - 4);
+        this.push('calm', 'Запись через три дня. Врач слушает долго и назначает анализы.');
+      } else if (idx === 1) {
+        s.delay = rnd(this.rng, 1.1, 2.3); this.mult *= 1 - d.delayPenalty * 1.05; s.quality = clamp(s.quality - 4);
+        this.push('bad', 'Вы ждёте. Сначала неделю, потом ещё месяц. Становится хуже — но привычно.');
+        if (d.course === 'acute') this.push('bad', 'Ночью становится совсем плохо. Скорая приезжает через сорок минут.');
+      } else {
+        s.delay = rnd(this.rng, .8, 1.4); this.mult *= 1 - d.delayPenalty * .55; s.quality = clamp(s.quality - 5);
+        this.push('calm', 'Вы читаете форумы до утра. Диагнозов в голове — семь, все страшные.');
+      }
+      this.push('note', def.note);
+      this.schedule('tests', s.delay);
+    }
+    else if (id === 'tests') {
+      if (idx === 0) {
+        s.money = clamp(s.money - (11 + 16 * d.cost)); this.mult *= 1.07;
+        this.push('calm', 'Полное обследование. Снимки, кровь, биопсия — всё, чтобы увидеть картину целиком.');
+      } else if (idx === 1) {
+        s.money = clamp(s.money - (4 + 6 * d.cost)); this.mult *= .98;
+        this.push('calm', 'Вы сдаёте обязательный минимум. Картина остаётся неполной, но времени это экономит.');
+      } else {
+        this.mult *= .90; s.quality = clamp(s.quality - 4);
+        this.push('bad', 'Вы уходите из кабинета, не дождавшись результата. Ещё полгода вы живёте как раньше.');
+      }
+      this.push('big', d.diagLine);
+      this.push('note', def.note);
+      this.schedule('treat', .55);
+    }
+    else if (id === 'treat') {
+      if (idx === 0) {
+        s.treated = true; s.adherence = .9; s.money = clamp(s.money - 12 * d.cost); this.mult *= 1.12;
+        this.push('calm', `Вы начинаете: ${d.treat[0]}, затем ${d.treat[1]}. Это становится частью расписания.`);
+      } else if (idx === 1) {
+        s.treated = true; s.adherence = .55; s.money = clamp(s.money - 7 * d.cost); this.mult *= .95;
+        this.push('calm', 'Вы делаете назначенное — и добавляете к нему то, что советуют знакомые. Врач недоволен, но вы решаете, что хуже не будет.');
+      } else {
+        s.treated = false; s.adherence = .1; this.mult *= .58; s.quality = clamp(s.quality + 2);
+        this.push('bad', 'Вы решаете не лечиться. Некоторое время это кажется свободой.');
+      }
+      if (d.course === 'curable' && s.treated) {
+        const chance = clamp01(this.cureP * (.62 + .5 * s.adherence) * (1 - (s.delay > 1 ? .25 : 0)));
+        if (this.rng() < chance) {
+          s.cured = true; this.curedAt = s.t;
+          this.endT = s.t + 3.4;
+          this.push('good', 'Ремиссия. Через полгода контрольный снимок чистый. Врач говорит слово «излечение» осторожно, но говорит.');
+        } else {
+          this.mult *= .8;
+          this.push('bad', 'Болезнь отступает не полностью. Врач говорит: «Пока держим».');
+        }
+      }
+      this.push('note', def.note);
+      if (!s.cured) {
+        this.schedule('disclose', Math.max(1.1, this.endT * .24));
+        if (this.endT > 2.6) this.schedule('late', this.endT * .70);
+      }
+    }
+    else if (id === 'disclose') {
+      if (idx === 0) {
+        s.disclosed = true; s.quality = clamp(s.quality + 7); s.money = clamp(s.money - 6); this.mult *= 1.03;
+        this.push('calm', 'Вы говорите вслух. Кто-то отводит глаза, кто-то предлагает помощь — и это меняет неделю.');
+      } else if (idx === 1) {
+        s.quality = clamp(s.quality - 7); s.money = clamp(s.money + 4);
+        this.push('bad', 'Вы молчите. На работе не знают, дома не спрашивают. Вы носите это один.');
+      } else {
+        s.quality = clamp(s.quality + 5); s.adherence = clamp01(s.adherence + .06); s.money = clamp(s.money - 2);
+        this.push('calm', 'Вы находите людей с таким же диагнозом. Впервые за долгое время кто-то понимает без объяснений.');
+      }
+      this.push('note', def.note);
+    }
+    else if (id === 'late') {
+      if (idx === 0) {
+        this.mult *= 1.07; s.quality = clamp(s.quality - 5); s.money = clamp(s.money - 10 * d.cost);
+        this.push('calm', 'Вы продолжаете. Курс за курсом, анализ за анализом. Надежда — это тоже лечение.');
+      } else if (idx === 1) {
+        this.mult *= .99; s.quality = clamp(s.quality + 12);
+        this.push('good', 'Вы выбираете не бороться за каждый месяц, а жить в тех, что есть. Боль отступает первой.');
+      } else {
+        s.money = clamp(s.money - 20 * d.cost);
+        if (this.rng() < .4) { this.mult *= 1.18; this.push('good', 'Вам достаётся место в исследовании. Врач не обещает ничего — и вы согласны даже на это.'); }
+        else { this.mult *= .9; this.push('bad', 'Экспериментальное лечение не работает. Вы платите за него сами.'); }
+      }
+      this.push('note', def.note);
+    }
+    if (!this.s.cured) {
+      this.endT = Math.min(this.baseSpan * this.mult, Math.max(1, this.country.life + 6 - this.onset));
+    }
+    this.pending = this.queue[0] || null;
+  }
+  advance(dt) {
+    if (this.done) return;
+    const target = Math.min(this.endT, this.s.t + dt);
+    let guard = 0;
+    while (this.s.t < target - 1e-9 && guard++ < 600) {
+      const step = Math.min(.05, target - this.s.t);
+      this.s.t += step;
+      this.update();
+      if (this.s.t >= this.nextBeat) { this.nextBeat = this.s.t + rnd(this.rng, .9, 1.9); this.beat(); }
+      if (this.pending && this.s.t >= this.pending.t) {
+        if (this.auto) { const id = this.pending.id; this.resolve(id, this.policy(id)); }
+        else { this.s.t = this.pending.t; this.update(); return; }
+      }
+      if (this.s.t >= this.endT - 1e-6) { this.s.t = this.endT; this.finish(); return; }
+    }
+    if (this.s.t >= this.endT - 1e-6) { this.s.t = this.endT; this.finish(); }
+  }
+  policy(id) {
+    const r = this.rng();
+    const good = .40 + .38 * this.access;
+    if (id === 'late') return r < .52 ? 1 : (r < .82 ? 0 : 2);
+    if (id === 'disclose') return r < .48 ? 0 : (r < .72 ? 2 : 1);
+    if (id === 'treat') return r < good ? 0 : (r < good + .28 ? 1 : 2);
+    if (r < good) return 0;
+    if (r < good + .38) return 1;
+    return 2;
+  }
+  finish() {
+    if (this.done) return;
+    this.done = true; this.pending = null; this.queue = []; this.s.t = this.endT; this.update();
+    if (this.s.cured) {
+      this.outcome = 'cured';
+      this.push('big', 'Болезнь осталась позади. Это не значит, что она не вернётся. Это значит, что сейчас её нет.');
+    } else {
+      this.outcome = 'dead';
+      const age = Math.round(this.onset + this.s.t);
+      this.push('big', this.soft
+        ? 'Здесь жизнь заканчивается.'
+        : `Вы умираете в ${yearsRu(age)}. Врач называет причину: ${this.d.death}.`);
+    }
+  }
+}
+
+function runLifeOut(d, country, sex, onset, seed) {
+  const l = new Life({d, country, sex, onset, seed, auto: true});
+  l.start();
+  let guard = 0;
+  while (!l.done && guard++ < 4000) l.advance(.5);
+  if (!l.done) { l.s.t = l.endT; l.finish(); }
+  return {
+    country, sex, onset,
+    endAge: Math.round(onset + l.s.t),
+    years: l.s.t,
+    kind: l.outcome,
+    access: country.access
+  };
+}
+
+/* =====================================================================
+   3. ИНТЕРФЕЙС
+   ===================================================================== */
+const LS_SET = 'od.settings.v1', LS_LIVES = 'od.lives.v1';
+const ST = {sex:'random', ageBand:'stat', country:'ru', disease:'auto', auto:false, soft:false, music:false};
+try { Object.assign(ST, JSON.parse(localStorage.getItem(LS_SET) || '{}')); } catch (e) {}
+const saveST = () => { try { localStorage.setItem(LS_SET, JSON.stringify(ST)); } catch (e) {} };
+
+/* --- селекты --- */
+const selCountry = $('#selCountry'), selDisease = $('#selDisease');
+COUNTRIES.forEach(c => {
+  const o = document.createElement('option');
+  o.value = c.id; o.textContent = c.name; selCountry.append(o);
+});
+const optAuto = document.createElement('option');
+optAuto.value = 'auto'; optAuto.textContent = 'По статистике — случайная болезнь';
+selDisease.append(optAuto);
+DISEASES.forEach(d => {
+  const o = document.createElement('option');
+  o.value = d.id; o.textContent = d.name + ' · ' + d.group; selDisease.append(o);
+});
+
+function syncUI() {
+  $$('#segSex button').forEach(b => b.classList.toggle('on', b.dataset.v === ST.sex));
+  $$('#segAge button').forEach(b => b.classList.toggle('on', b.dataset.v === ST.ageBand));
+  selCountry.value = ST.country;
+  selDisease.value = ST.disease;
+  $('#tgAuto').checked = !!ST.auto;
+  $('#tgSoft').checked = !!ST.soft;
+  $('#tgMusic').checked = !!ST.music;
+}
+$$('#segSex button').forEach(b => b.onclick = () => { ST.sex = b.dataset.v; saveST(); syncUI(); });
+$$('#segAge button').forEach(b => b.onclick = () => { ST.ageBand = b.dataset.v; saveST(); syncUI(); });
+selCountry.onchange = () => { ST.country = selCountry.value; saveST(); };
+selDisease.onchange = () => { ST.disease = selDisease.value; saveST(); };
+$('#tgAuto').onchange = e => { ST.auto = e.target.checked; saveST(); };
+$('#tgSoft').onchange = e => { ST.soft = e.target.checked; saveST(); };
+$('#tgMusic').onchange = e => { ST.music = e.target.checked; saveST(); setMusic(e.target.checked); };
+
+/* --- таблица болезней --- */
+(() => {
+  const tb = $('#diseaseRows');
+  DISEASES.slice().sort((a, b) => b.weight - a.weight).forEach(d => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${esc(d.name)}<span class="tag">${esc(d.group)}</span></td>` +
+      `<td class="hide-s">${d.onset[0]}–${d.onset[2]} лет</td><td>${esc(d.arc)}</td>`;
+    tb.append(tr);
+  });
+})();
+
+/* --- счётчики --- */
+const RATES = [20e6 / 31536000, 9.7e6 / 31536000, 41e6 / 31536000];
+const t0 = performance.now();
+function tickCounters(ts) {
+  const sec = (ts - t0) / 1000;
+  $('#c1').textContent = fmtInt(RATES[0] * sec);
+  $('#c2').textContent = fmtInt(RATES[1] * sec);
+  $('#c3').textContent = fmtInt(RATES[2] * sec);
+  requestAnimationFrame(tickCounters);
+}
+requestAnimationFrame(tickCounters);
+
+/* --- состояние симуляции --- */
+let sim = null, code = '0000', feedIdx = 0, paused = false, speed = 1,
+    panelOpen = false, ended = false, lastTs = 0, rafId = 0, atBottom = true;
+
+function weightedDisease(r) {
+  const total = DISEASES.reduce((a, d) => a + d.weight, 0);
+  let x = r() * total;
+  for (const d of DISEASES) { x -= d.weight; if (x <= 0) return d; }
+  return DISEASES[0];
+}
+
+function startLife(allRandom) {
+  stopLoop();
+  const seed = (Math.random() * 4294967295) >>> 0;
+  const r = mulberry32(seed);
+  const d = (allRandom || ST.disease === 'auto')
+    ? weightedDisease(r)
+    : (DISEASES.find(x => x.id === ST.disease) || weightedDisease(r));
+  const country = COUNTRIES.find(c => c.id === ST.country) || COUNTRIES[0];
+  const sex = d.only || (ST.sex === 'random' ? (r() < d.skew ? 'female' : 'male') : ST.sex);
+  const [a, m, b] = d.onset;
+  let onset;
+  if (ST.ageBand === 'young') onset = tri(r, a, a + (m - a) * .45, m);
+  else if (ST.ageBand === 'old') onset = tri(r, m, m + (b - m) * .45, b);
+  else onset = tri(r, a, m, b);
+  onset = Math.max(1, Math.round(onset));
+
+  sim = new Life({d, country, sex, onset, seed, auto: !!ST.auto, soft: !!ST.soft});
+  code = seed.toString(36).toUpperCase().slice(-4).padStart(4, '0');
+  feedIdx = 0; paused = true; panelOpen = true; ended = false; speed = 1; atBottom = true;
+  $('#feed').innerHTML = '';
+  $('#simDisease').textContent = d.name;
+  $('#simPerson').textContent = `${sex === 'female' ? 'женщина' : 'мужчина'} · ${yearsRu(onset)} · ${country.name} · ${code}`;
+  $('#mSym').style.width = '0%'; $('#mCtl').style.width = '0%'; $('#mLife').style.width = '0%';
+  $('#simBar').style.width = '0%';
+  $('#scrubL').textContent = 'диагноз в ' + onset;
+  $('#simAge').textContent = onset;
+  $('#simAgeWord').textContent = plural(onset, 'год', 'года', 'лет');
+  $('#simYear').textContent = NOW_YEAR;
+  $$('.spd').forEach(b => b.classList.toggle('on', b.dataset.spd === '1'));
+  $('#btnPause').textContent = 'Пауза';
+  $('#sim').classList.add('on');
+  document.body.style.overflow = 'hidden';
+
+  $('#panelCard').innerHTML = `
+    <p class="kick">Жизнь ${code} · ${esc(d.group)}</p>
+    <h3>${esc(d.name)}</h3>
+    <p class="pt" style="font-family:var(--serif);font-size:15px;color:#cfcbc4">${esc(d.onsetLine)}</p>
+    <p class="pt">${esc(d.tagline)}</p>
+    <p class="pt" style="color:var(--dim2);font-size:12.5px">Вам ${yearsRu(onset)}. ${esc(country.name)}. Доступ к помощи: ${accessWord(country.access)}. Болезнь выбрана не вами — как и в жизни.</p>
+    <div class="opts"><button class="opt" id="btnBegin"><span class="k">→</span><span class="tx"><strong>Начать</strong><em>Около 20 минут, если не ускорять.</em></span></button></div>
+    <p class="pn">Внизу — кнопки паузы и скорости. Каждое решение меняет то, что будет дальше.</p>`;
+  $('#panel').classList.add('on');
+  $('#btnBegin').onclick = begin;
+  setTimeout(() => { const b = $('#btnBegin'); if (b) b.focus(); }, 80);
+}
+
+function accessWord(a) { return a > .8 ? 'высокий' : a > .55 ? 'средний' : a > .35 ? 'низкий' : 'почти никакой'; }
+
+function begin() {
+  $('#panel').classList.remove('on');
+  panelOpen = false; paused = false;
+  sim.start();
+  lastTs = performance.now();
+  rafId = requestAnimationFrame(loop);
+  paint();
+}
+
+function stopLoop() { if (rafId) cancelAnimationFrame(rafId); rafId = 0; }
+
+function loop(ts) {
+  if (!sim) return;
+  if (!lastTs) lastTs = ts;
+  if (paused || panelOpen) { lastTs = ts; rafId = requestAnimationFrame(loop); return; }
+  const dt = Math.min(.12, Math.max(0, (ts - lastTs) / 1000));
+  lastTs = ts;
+  sim.advance(dt * speed * (sim.s.cured ? 2.2 : 1));
+  paint();
+  if (sim.done) { showEnd(); return; }
+  if (sim.pending && sim.s.t >= sim.pending.t - 1e-9) { openDecision(); }
+  rafId = requestAnimationFrame(loop);
+}
+
+function paint() {
+  if (!sim) return;
+  const l = sim, s = l.s, age = Math.floor(l.onset + s.t);
+  $('#simAge').textContent = age;
+  $('#simAgeWord').textContent = plural(age, 'год', 'года', 'лет');
+  $('#simYear').textContent = Math.floor(NOW_YEAR + s.t);
+  $('#mSym').style.width = clamp(3 + s.prog * 92) + '%';
+  $('#mCtl').style.width = (s.control * 100) + '%';
+  $('#mLife').style.width = s.quality + '%';
+  $('#simBar').style.width = (clamp01(s.t / Math.max(.3, l.endT)) * 100) + '%';
+  $('#scrubR').textContent = s.cured ? 'болезнь позади' : yearsRu(l.endT) + ' с диагнозом';
+  const feed = $('#feed');
+  for (; feedIdx < l.events.length; feedIdx++) {
+    const e = l.events[feedIdx];
+    const el = document.createElement('article');
+    el.className = 'ev ' + (e.kind === 'note' ? 'note' : e.kind);
+    const m = document.createElement('div');
+    m.className = 'm';
+    m.textContent = e.kind === 'note' ? '' : `${Math.floor(NOW_YEAR + e.t)} · ${yearsRu(e.age)}`;
+    const p = document.createElement('p');
+    p.textContent = e.text;
+    el.append(m, p);
+    feed.append(el);
+  }
+  if (atBottom) feed.scrollTop = feed.scrollHeight;
+}
+
+function openDecision() {
+  if (!sim || !sim.pending) return;
+  const def = decisionDef(sim, sim.pending.id);
+  panelOpen = true; paused = true;
+  $('#panelCard').innerHTML = `
+    <p class="kick">${esc(def.kick)}</p>
+    <h3>${esc(def.title)}</h3>
+    <p class="pt">${esc(def.text)}</p>
+    <div class="opts"></div>
+    <p class="pn">${esc(def.note)}</p>`;
+  const box = $('#panelCard .opts');
+  def.options.forEach((o, i) => {
+    const b = document.createElement('button');
+    b.className = 'opt';
+    b.type = 'button';
+    b.innerHTML = `<span class="k">${i + 1}</span><span class="tx"><strong>${esc(o.label)}</strong><em>${esc(o.hint)}</em></span>`;
+    b.onclick = () => choose(i);
+    box.append(b);
+  });
+  $('#panel').classList.add('on');
+  $('#panelCard').scrollTop = 0;
+  paint();
+  setTimeout(() => { const f = $('#panelCard .opt'); if (f) f.focus(); }, 60);
+}
+
+function choose(i) {
+  if (!sim || !sim.pending) return;
+  const id = sim.pending.id;
+  $('#panel').classList.remove('on');
+  panelOpen = false;
+  sim.resolve(id, i);
+  paused = false; lastTs = performance.now();
+  paint();
+  if (sim.done) { showEnd(); return; }
+  if (sim.pending && sim.s.t >= sim.pending.t - 1e-9) { openDecision(); return; }
+  if (!rafId) rafId = requestAnimationFrame(loop);
+}
+
+/* --- конец жизни --- */
+function shadows() {
+  const others = COUNTRIES.filter(c => c.id !== sim.country.id);
+  const order = ['in','ng','br','de','us','cn','jp','ke','eg','gb','fr','za','id','mx','pl']
+    .map(id => others.find(c => c.id === id)).filter(Boolean);
+  const r = mulberry32((sim.seed ^ 0x9e3779b9) >>> 0);
+  const out = [];
+  while (out.length < 4 && order.length) {
+    const c = order.splice(Math.floor(r() * order.length), 1)[0];
+    const sex = sim.d.only || (r() < sim.d.skew ? 'female' : 'male');
+    const onset = Math.max(1, Math.round(sim.onset + rnd(r, -7, 7)));
+    out.push(runLifeOut(sim.d, c, sex, onset, (sim.seed + out.length * 7919 + 13) >>> 0));
+  }
+  return out;
+}
+
+function shadowLabel(x) {
+  const f = x.sex === 'female';
+  if (x.kind === 'cured') return f ? 'Вылечили. Живёт дальше.' : 'Вылечили. Живёт дальше.';
+  if (x.years < 1) return f ? 'Умерла почти сразу.' : 'Умер почти сразу.';
+  return `${f ? 'Прожила' : 'Прожил'} с диагнозом ${yearsRu(x.years)}.`;
+}
+
+function showEnd() {
+  if (!sim || ended) return;
+  ended = true; stopLoop(); paused = true; panelOpen = false;
+  $('#panel').classList.remove('on');
+  const l = sim, d = l.d, age = Math.round(l.onset + l.s.t), cured = l.outcome === 'cured';
+  const sh = shadows();
+  const perDay = Math.max(1, Math.round(d.yearly / 365));
+  const words = [];
+
+  let html = `<div class="end" id="endCard">
+    <p class="kick">Жизнь ${code} · ${esc(d.name)} · ${esc(l.country.name)} · ${l.sex === 'female' ? 'женщина' : 'мужчина'}</p>`;
+  if (cured) {
+    html += `<h2>Она осталась <em>позади</em></h2>
+      <p class="cause">Вам ${yearsRu(age)}. ${esc(d.name)} — в прошлом. Впереди обычная жизнь, которую никто не обещал.</p>`;
+  } else {
+    html += `<h2>Вам было <em>${age}</em></h2>
+      <p class="cause">${esc(d.name)}. Причина — ${esc(d.death)}. Вы прожили с диагнозом ${yearsRu(l.s.t)}${l.soft ? '.' : ', и это была не вся ваша жизнь.'}</p>`;
+  }
+
+  html += `<div class="stat-row">
+      <div><b>${age}</b><span>${cured ? 'сейчас' : 'лет в конце'}</span></div>
+      <div><b>${Math.round(l.s.t)}</b><span>лет с диагнозом</span></div>
+      <div><b>${l.choices.length}</b><span>пауз и решений</span></div>
+    </div>`;
+
+  html += `<h4>Рядом, в тот же день</h4>
+    <p class="small" style="color:var(--dim);margin-bottom:12px">Пока вы слышали свой диагноз, его же услышали ещё примерно ${fmtInt(perDay)} человек. Четверо из них жили по той же статистике — в других странах. Никто из них этого не выбирал.</p>
+    <div class="neigh">`;
+  sh.forEach(x => {
+    html += `<article><h5>${esc(x.country.name)} · ${x.sex === 'female' ? 'женщина' : 'мужчина'}</h5>
+      <p>диагноз в ${x.onset}</p>
+      <div class="ag">${x.endAge} ${plural(x.endAge, 'год', 'года', 'лет')}</div>
+      <p>${esc(shadowLabel(x))}</p></article>`;
+  });
+  html += `</div>`;
+
+  html += `<h4>Ваши решения</h4><div class="recap">`;
+  l.choices.forEach(c => { html += `<div><span>${esc(c.q)}</span><b>${esc(c.a)}</b></div>`; });
+  html += `</div>`;
+
+  html += `<h4>Что здесь было настоящим</h4><div class="facts">`;
+  d.facts.forEach(f => { html += `<div><b>${esc(f[0])}</b><span>${esc(f[1])}</span></div>`; });
+  html += `</div>`;
+
+  html += `<h4>Что вы скажете этому человеку?</h4>
+    <p class="small dim">Одна строка. Останется только в этом браузере.</p>
+    <textarea class="words" id="wordsBox" maxlength="240" placeholder="Например: я бы не ждала так долго."></textarea>
+    <div class="end-actions">
+      <button class="btn" id="btnAgain">Прожить другую болезнь</button>
+      <button class="btn ghost" id="btnHome">На главную</button>
+      <button class="btn ghost" id="btnCopy">Скопировать итог</button>
+    </div>`;
+
+  if (d.help) {
+    html += `<div class="help">Если то, что вы прочитали, слишком похоже на вашу жизнь: 8-800-2000-122 (Россия, бесплатно, круглосуточно)<br>findahelpline.com — линии помощи в 130+ странах.</div>`;
+  }
+
+  html += `<p class="fineprint">Это модель, а не прогноз и не медицинская рекомендация. Цифры — приблизительные оценки: ${esc(SOURCES)}. Течение болезни упрощено: решения меняют модель, а не реальность. Если вас что-то беспокоит в собственном здоровье, это повод пойти к врачу.</p>
+  </div>`;
+
+  $('#feed').insertAdjacentHTML('beforeend', html);
+  const card = $('#endCard');
+  card.scrollIntoView({block: 'start', behavior: 'smooth'});
+
+  $('#btnAgain').onclick = () => { closeSim(); startLife(true); };
+  $('#btnHome').onclick = closeSim;
+  $('#btnCopy').onclick = async () => {
+    const txt = `${d.name}. ${cured ? 'Излечение. Вам ' + age + '.' : 'Умер(ла) в ' + age + '.'} Прожито с диагнозом ${Math.round(l.s.t)} лет. ${l.country.name}. Симуляция «Один диагноз».`;
+    try { await navigator.clipboard.writeText(txt); $('#btnCopy').textContent = 'Скопировано'; } catch (e) {}
+  };
+  $('#wordsBox').addEventListener('change', e => {
+    const v = e.target.value.trim();
+    if (v) { words[0] = v; saveLife(v); renderPast(); }
+  });
+  saveLife('');
+  renderPast();
+}
+
+function saveLife(words) {
+  const l = sim;
+  let arr = [];
+  try { arr = JSON.parse(localStorage.getItem(LS_LIVES) || '[]'); } catch (e) {}
+  const entry = {
+    code,
+    disease: l.d.name,
+    country: l.country.name,
+    onset: l.onset,
+    endAge: Math.round(l.onset + l.s.t),
+    years: Math.round(l.s.t),
+    kind: l.outcome,
+    words: words || '',
+    date: Date.now()
+  };
+  const i = arr.findIndex(x => x.code === code && x.date === entry.date);
+  if (i < 0) arr.unshift(entry); else arr[i] = entry;
+  try { localStorage.setItem(LS_LIVES, JSON.stringify(arr.slice(0, 24))); } catch (e) {}
+}
+
+function renderPast() {
+  let arr = [];
+  try { arr = JSON.parse(localStorage.getItem(LS_LIVES) || '[]'); } catch (e) {}
+  const box = $('#pastBox'), list = $('#pastList');
+  if (!arr.length) { box.classList.remove('on'); return; }
+  box.classList.add('on');
+  list.innerHTML = '';
+  arr.forEach(x => {
+    const d = document.createElement('div');
+    d.innerHTML = `<b>${esc(x.disease)}${x.kind === 'cured' ? ' · излечение' : ''}</b>` +
+      `<span>${x.endAge} ${plural(x.endAge, 'год', 'года', 'лет')} · ${esc(x.country)}</span><code>${esc(x.code)}</code>`;
+    list.append(d);
+  });
+}
+$('#btnClearLives').onclick = () => { try { localStorage.removeItem(LS_LIVES); } catch (e) {} renderPast(); };
+
+function closeSim() {
+  stopLoop();
+  $('#sim').classList.remove('on');
+  document.body.style.overflow = '';
+  sim = null; ended = false; panelOpen = false; paused = false; rafId = 0;
+  $('#feed').innerHTML = '';
+  $('#panel').classList.remove('on');
+  setMusic(ST.music);
+  renderPast();
+}
+
+/* --- управление --- */
+$('#btnStart').onclick = () => startLife(false);
+$('#btnRandom').onclick = () => startLife(true);
+$('#btnPause').onclick = () => {
+  if (!sim) return;
+  paused = !paused;
+  $('#btnPause').textContent = paused ? 'Продолжить' : 'Пауза';
+  lastTs = performance.now();
+};
+$$('.spd').forEach(b => b.onclick = () => {
+  speed = +b.dataset.spd;
+  $$('.spd').forEach(x => x.classList.toggle('on', x === b));
+  lastTs = performance.now();
+});
+$('#btnExit').onclick = closeSim;
+$('#feed').addEventListener('scroll', () => {
+  const f = $('#feed');
+  atBottom = f.scrollTop + f.clientHeight > f.scrollHeight - 60;
+});
+document.addEventListener('keydown', e => {
+  if (!sim) return;
+  if (e.key === 'Escape') { closeSim(); return; }
+  if (e.key === ' ' && !panelOpen) { e.preventDefault(); $('#btnPause').click(); }
+  if (panelOpen && /^[1-3]$/.test(e.key)) { const b = $$('#panelCard .opt')[+e.key - 1]; if (b) b.click(); }
+});
+
+/* --- тихая музыка (Web Audio, без файлов) --- */
+let pad = null;
+function setMusic(on) {
+  if (on && !pad) {
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      const ctx = new AC();
+      const master = ctx.createGain(); master.gain.value = 0; master.connect(ctx.destination);
+      master.gain.linearRampToValueAtTime(.045, ctx.currentTime + 3);
+      const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 760; lp.connect(master);
+      const oscs = [110, 164.81, 220, 329.63].map((f, i) => {
+        const o = ctx.createOscillator(); o.type = 'sine'; o.frequency.value = f;
+        const g = ctx.createGain(); g.gain.value = .11 / (i + 1); o.connect(g); g.connect(lp); o.start(); return o;
+      });
+      const lfo = ctx.createOscillator(); lfo.frequency.value = .045;
+      const lg = ctx.createGain(); lg.gain.value = .012; lfo.connect(lg); lg.connect(master.gain); lfo.start();
+      pad = {ctx, stop() {
+        master.gain.linearRampToValueAtTime(0, ctx.currentTime + .6);
+        setTimeout(() => { oscs.forEach(o => { try { o.stop(); } catch (e) {} }); try { lfo.stop(); ctx.close(); } catch (e) {} }, 800);
+      }};
+      if (ctx.state === 'suspended') ctx.resume();
+    } catch (e) { pad = null; }
+  } else if (!on && pad) { pad.stop(); pad = null; }
+}
+
+/* --- инициализация --- */
+syncUI();
+renderPast();
+if (ST.music) setMusic(true);
+</script>
+</body>
+</html>
