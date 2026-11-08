@@ -1387,7 +1387,7 @@ function showEnd() {
   if (!sim || ended) return;
   ended = true; stopLoop(); paused = true; panelOpen = false;
   $('#panel').classList.remove('on');
-  const l = sim, d = l.d, age = Math.round(l.onset + l.s.t), cured = l.outcome === 'cured';
+  const l = sim, d = l.d, age = Math.floor(l.onset + l.s.t), cured = l.outcome === 'cured';
   const sh = shadows();
   const perDay = Math.max(1, Math.round(d.yearly / 365));
   const words = [];
