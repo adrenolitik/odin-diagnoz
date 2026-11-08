@@ -1212,6 +1212,9 @@ requestAnimationFrame(tickCounters);
 /* --- состояние симуляции --- */
 let sim = null, code = '0000', feedIdx = 0, paused = false, speed = 1,
     panelOpen = false, ended = false, lastTs = 0, rafId = 0, atBottom = true;
+/* Темп: столько лет жизни проходит за одну реальную секунду при 1×.
+   0.028 → год за ~36 секунд, тридцатилетняя болезнь — около 18 минут. */
+const RATE = 0.028;
 
 function weightedDisease(r) {
   const total = DISEASES.reduce((a, d) => a + d.weight, 0);
@@ -1285,7 +1288,7 @@ function loop(ts) {
   if (paused || panelOpen) { lastTs = ts; rafId = requestAnimationFrame(loop); return; }
   const dt = Math.min(.12, Math.max(0, (ts - lastTs) / 1000));
   lastTs = ts;
-  sim.advance(dt * speed * (sim.s.cured ? 2.2 : 1));
+  sim.advance(dt * speed * RATE * (sim.s.cured ? 4 : 1));
   paint();
   if (sim.done) { showEnd(); return; }
   if (sim.pending && sim.s.t >= sim.pending.t - 1e-9) { openDecision(); }
