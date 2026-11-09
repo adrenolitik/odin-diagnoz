@@ -1,6 +1,6 @@
 # One Diagnosis
 
-[![Site](https://img.shields.io/badge/site-adrenolitik.github.io%2Fodin--diagnoz-e0694f)](https://adrenolitik.github.io/odin-diagnoz/) [![GitHub Pages](https://img.shields.io/website?url=https%3A%2F%2Fadrenolitik.github.io%2Fodin-diagnoz%2F&label=pages&up_message=online&down_message=offline&color=e0694f)](https://adrenolitik.github.io/odin-diagnoz/)
+[![Site](https://img.shields.io/badge/site-adrenolitik.github.io%2Fodin--diagnoz-e0694f)](https://adrenolitik.github.io/odin-diagnoz/) [![GitHub Pages](https://img.shields.io/website?url=https%3A%2F%2Fadrenolitik.github.io%2Fodin-diagnoz%2F&label=pages&up_message=online&down_message=offline&color=e0694f)](https://adrenolitik.github.io/odin-diagnoz/) [![License: MIT](https://img.shields.io/github/license/adrenolitik/odin-diagnoz?label=license&color=e0694f)](LICENSE)
 
 A disease simulation: the diagnosis is drawn from real statistics — sex, age at onset and country come from data, not from preferences. You live that life to the end, with pauses where life actually makes a choice. Four similar lives run alongside in other countries: the same diagnosis, different access to care.
 

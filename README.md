@@ -1,6 +1,6 @@
 # Один диагноз
 
-[![Сайт](https://img.shields.io/badge/site-adrenolitik.github.io%2Fodin--diagnoz-e0694f)](https://adrenolitik.github.io/odin-diagnoz/) [![GitHub Pages](https://img.shields.io/website?url=https%3A%2F%2Fadrenolitik.github.io%2Fodin-diagnoz%2F&label=pages&up_message=online&down_message=offline&color=e0694f)](https://adrenolitik.github.io/odin-diagnoz/)
+[![Сайт](https://img.shields.io/badge/site-adrenolitik.github.io%2Fodin--diagnoz-e0694f)](https://adrenolitik.github.io/odin-diagnoz/) [![GitHub Pages](https://img.shields.io/website?url=https%3A%2F%2Fadrenolitik.github.io%2Fodin-diagnoz%2F&label=pages&up_message=online&down_message=offline&color=e0694f)](https://adrenolitik.github.io/odin-diagnoz/) [![Лицензия](https://img.shields.io/github/license/adrenolitik/odin-diagnoz?label=license&color=e0694f)](LICENSE)
 
 **Язык:** Русский · [English](README.en.md)
 
