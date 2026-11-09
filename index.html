@@ -49,6 +49,11 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .top nav{margin-left:auto;display:flex;gap:20px;font-size:13px;color:var(--dim)}
 .top nav a{text-decoration:none}
 .top nav a:hover{color:var(--ink)}
+.lang{display:flex;border:1px solid var(--line2);border-radius:7px;overflow:hidden;margin-left:14px;flex:0 0 auto}
+.lang button{font-size:11.5px;letter-spacing:.08em;padding:5px 9px;color:var(--dim2);background:#0d0e11;border-right:1px solid var(--line);transition:.15s}
+.lang button:last-child{border-right:0}
+.lang button:hover{color:var(--ink)}
+.lang button.on{color:#f0a591;background:var(--acc-soft)}
 @media(max-width:640px){.top nav a:nth-child(n+3){display:none}.brand span{display:none}}
 
 /* ---------- hero ---------- */
@@ -271,35 +276,38 @@ footer a:hover{color:var(--ink)}
 
 <header class="top">
   <div class="wrap in">
-    <div class="brand"><b>Один диагноз</b><span>симуляция болезни · v0.1 · 16+</span></div>
+    <div class="brand"><b data-i18n="brand">Один диагноз</b><span data-i18n="brandSub">симуляция болезни · v0.1 · 16+</span></div>
     <nav>
-      <a href="#start">Начать</a>
-      <a href="#how">Как это устроено</a>
-      <a href="#list">Болезни</a>
-      <a href="#help">Помощь</a>
+      <a href="#start" data-i18n="navStart">Начать</a>
+      <a href="#how" data-i18n="navHow">Как это устроено</a>
+      <a href="#list" data-i18n="navList">Болезни</a>
+      <a href="#help" data-i18n="navHelp">Помощь</a>
     </nav>
+    <div class="lang" id="langSwitch" role="group" aria-label="Language">
+      <button type="button" data-lang="ru">RU</button><button type="button" data-lang="en">EN</button>
+    </div>
   </div>
 </header>
 
 <main>
   <section class="hero wrap">
-    <p class="kicker">Симуляция одной болезни · реальная статистика · около 20 минут</p>
-    <h1><em>3</em><span>из 4</span></h1>
-    <p class="lead">Три из четырёх смертей в мире приходятся на болезни, которые длятся годами: сердце, рак, диабет, лёгкие. <b>41 миллион человек в год.</b> Почти никто из них не выбирал, чем заболеть — так же, как не выбирают, где родиться.</p>
-    <p class="after">Здесь вы получаете один диагноз по реальной статистике — пол, возраст, страну и вероятности — и проживаете его до конца. С паузами там, где жизнь действительно делает выбор.</p>
+    <p class="kicker" data-i18n="heroKicker">Симуляция одной болезни · реальная статистика · около 20 минут</p>
+    <h1><em>3</em><span data-i18n="heroOf">из 4</span></h1>
+    <p class="lead" data-i18n-html="heroLead">Три из четырёх смертей в мире приходятся на болезни, которые длятся годами: сердце, рак, диабет, лёгкие. <b>41 миллион человек в год.</b> Почти никто из них не выбирал, чем заболеть — так же, как не выбирают, где родиться.</p>
+    <p class="after" data-i18n="heroAfter">Здесь вы получаете один диагноз по реальной статистике — пол, возраст, страну и вероятности — и проживаете его до конца. С паузами там, где жизнь действительно делает выбор.</p>
 
-    <div class="counters" aria-label="Счётчики в реальном времени">
+    <div class="counters" data-i18n-aria="countersAria" aria-label="Счётчики в реальном времени">
       <div>
         <b id="c1" class="mono">0</b>
-        <span>новых случаев рака в мире с тех пор, как вы открыли страницу</span>
+        <span data-i18n="counter1">новых случаев рака в мире с тех пор, как вы открыли страницу</span>
       </div>
       <div>
         <b id="c2" class="mono">0</b>
-        <span>смертей от рака за это же время</span>
+        <span data-i18n="counter2">смертей от рака за это же время</span>
       </div>
       <div>
         <b id="c3" class="mono">0</b>
-        <span>смертей от длительных болезней за это же время</span>
+        <span data-i18n="counter3">смертей от длительных болезней за это же время</span>
       </div>
     </div>
   </section>
@@ -307,154 +315,165 @@ footer a:hover{color:var(--ink)}
   <section class="wrap sec" id="start">
     <div class="setup">
       <div class="hd">
-        <h2>Если бы диагноз поставили сейчас</h2>
-        <p>Пол, возраст и страну определяет статистика. Вы можете поменять три вещи — и начать.</p>
+        <h2 data-i18n="setupH2">Если бы диагноз поставили сейчас</h2>
+        <p data-i18n="setupSub">Пол, возраст и страну определяет статистика. Вы можете поменять три вещи — и начать.</p>
       </div>
       <div class="bd">
         <div class="fields">
           <div class="field">
-            <label>Пол</label>
+            <label data-i18n="fldSex">Пол</label>
             <div class="seg" id="segSex">
-              <button data-v="female">Женский</button>
-              <button data-v="male">Мужской</button>
-              <button data-v="random" class="on">Случайно</button>
+              <button data-v="female" data-i18n="sexF">Женский</button>
+              <button data-v="male" data-i18n="sexM">Мужской</button>
+              <button data-v="random" class="on" data-i18n="sexR">Случайно</button>
             </div>
           </div>
           <div class="field">
-            <label>Возраст начала</label>
+            <label data-i18n="fldAge">Возраст начала</label>
             <div class="seg" id="segAge">
-              <button data-v="stat" class="on">По статистике</button>
-              <button data-v="young">Молодой</button>
-              <button data-v="old">Пожилой</button>
+              <button data-v="stat" class="on" data-i18n="ageStat">По статистике</button>
+              <button data-v="young" data-i18n="ageYoung">Молодой</button>
+              <button data-v="old" data-i18n="ageOld">Пожилой</button>
             </div>
           </div>
           <div class="field">
-            <label>Страна и доступ к помощи</label>
-            <select id="selCountry" aria-label="Страна"></select>
+            <label data-i18n="fldCountry">Страна и доступ к помощи</label>
+            <select id="selCountry" data-i18n-aria="ariaCountry" aria-label="Страна"></select>
           </div>
         </div>
         <div class="fields" style="grid-template-columns:1fr">
           <div class="field">
-            <label>Болезнь</label>
-            <select id="selDisease" aria-label="Болезнь"></select>
+            <label data-i18n="fldDisease">Болезнь</label>
+            <select id="selDisease" data-i18n-aria="ariaDisease" aria-label="Болезнь"></select>
           </div>
         </div>
         <div class="toggles">
-          <label class="tg"><input type="checkbox" id="tgAuto"><i></i>Авторежим — просто наблюдать</label>
-          <label class="tg"><input type="checkbox" id="tgSoft"><i></i>Убрать тяжёлые сцены</label>
-          <label class="tg"><input type="checkbox" id="tgMusic"><i></i>Тихая музыка</label>
+          <label class="tg"><input type="checkbox" id="tgAuto"><i></i><span data-i18n="tgAuto">Авторежим — просто наблюдать</span></label>
+          <label class="tg"><input type="checkbox" id="tgSoft"><i></i><span data-i18n="tgSoft">Убрать тяжёлые сцены</span></label>
+          <label class="tg"><input type="checkbox" id="tgMusic"><i></i><span data-i18n="tgMusic">Тихая музыка</span></label>
         </div>
         <div class="actions">
-          <button class="btn" id="btnStart">Прожить этот диагноз</button>
-          <button class="btn ghost" id="btnRandom">Случайная жизнь</button>
-          <span class="micro" id="startHint">16 болезней · 5 пауз · ничего не отправляется на сервер</span>
+          <button class="btn" id="btnStart" data-i18n="btnStart">Прожить этот диагноз</button>
+          <button class="btn ghost" id="btnRandom" data-i18n="btnRandom">Случайная жизнь</button>
+          <span class="micro" id="startHint" data-i18n="startHint">16 болезней · 5 пауз · ничего не отправляется на сервер</span>
         </div>
       </div>
     </div>
   </section>
 
   <section class="wrap sec" id="how">
-    <h2>Как это устроено</h2>
-    <p class="sub">Одна жизнь с одним диагнозом. Не игра в выбор — попытка прожить статистику изнутри.</p>
+    <h2 data-i18n="howH2">Как это устроено</h2>
+    <p class="sub" data-i18n="howSub">Одна жизнь с одним диагнозом. Не игра в выбор — попытка прожить статистику изнутри.</p>
     <div class="cards3">
       <article>
-        <h3>Диагноз не выбирают</h3>
-        <p>Болезнь выпадает по реальной частоте: диабет и депрессия — часто, рассеянный склероз и муковисцидоз — редко. Пол, возраст начала и страна тоже берутся из статистики, а не из ваших пожеланий.</p>
+        <h3 data-i18n="howC1t">Диагноз не выбирают</h3>
+        <p data-i18n="howC1p">Болезнь выпадает по реальной частоте: диабет и депрессия — часто, рассеянный склероз и муковисцидоз — редко. Пол, возраст начала и страна тоже берутся из статистики, а не из ваших пожеланий.</p>
       </article>
       <article>
-        <h3>Пауза</h3>
-        <p>В пяти местах время останавливается: первые симптомы, обследование, начало лечения, близкие и работа, последний отрезок. Каждый выбор меняет то, что будет дальше, — но не отменяет статистику.</p>
+        <h3 data-i18n="howC2t">Пауза</h3>
+        <p data-i18n="howC2p">В пяти местах время останавливается: первые симптомы, обследование, начало лечения, близкие и работа, последний отрезок. Каждый выбор меняет то, что будет дальше, — но не отменяет статистику.</p>
       </article>
       <article>
-        <h3>Рядом идут другие</h3>
-        <p>В тот же день такой же диагноз слышат тысячи людей. Четверо из них проживают его вместе с вами — в других странах и с разным доступом к помощи. Никто из них этого не выбирал.</p>
+        <h3 data-i18n="howC3t">Рядом идут другие</h3>
+        <p data-i18n="howC3p">В тот же день такой же диагноз слышат тысячи людей. Четверо из них проживают его вместе с вами — в других странах и с разным доступом к помощи. Никто из них этого не выбирал.</p>
       </article>
     </div>
 
     <div class="prose">
-      <p>Продолжительность жизни с болезнью, вероятность ремиссии и тяжесть осложнений зависят от доступа к медицине — и это самая жестокая часть статистики. Одна и та же болезнь в стране с бесплатной помощью и в стране, где лечение оплачивают из кармана, заканчивается по-разному. Поэтому в симуляции страна влияет сильнее, чем любой ваш выбор.</p>
-      <p>Всё, что происходит, — модель. Она построена на опубликованных оценках, но не предсказывает ничью конкретную жизнь. <em>Здесь нельзя умереть от того, что вы «плохо играли»: можно только увидеть, как статистика распределяет шансы.</em></p>
+      <p data-i18n="howP1">Продолжительность жизни с болезнью, вероятность ремиссии и тяжесть осложнений зависят от доступа к медицине — и это самая жестокая часть статистики. Одна и та же болезнь в стране с бесплатной помощью и в стране, где лечение оплачивают из кармана, заканчивается по-разному. Поэтому в симуляции страна влияет сильнее, чем любой ваш выбор.</p>
+      <p data-i18n-html="howP2">Всё, что происходит, — модель. Она построена на опубликованных оценках, но не предсказывает ничью конкретную жизнь. <em>Здесь нельзя умереть от того, что вы «плохо играли»: можно только увидеть, как статистика распределяет шансы.</em></p>
     </div>
   </section>
 
   <section class="wrap sec" id="list">
-    <h2>Болезни в симуляции</h2>
-    <p class="sub">Шестнадцать состояний — от самых частых в мире до редких. Частота выпадения соответствует распространённости.</p>
+    <h2 data-i18n="listH2">Болезни в симуляции</h2>
+    <p class="sub" data-i18n="listSub">Шестнадцать состояний — от самых частых в мире до редких. Частота выпадения соответствует распространённости.</p>
     <table class="tbl">
       <thead>
-        <tr><th>Болезнь</th><th class="hide-s">Начало</th><th>Чем обычно заканчивается</th></tr>
+        <tr><th data-i18n="tblDisease">Болезнь</th><th class="hide-s" data-i18n="tblOnset">Начало</th><th data-i18n="tblArc">Чем обычно заканчивается</th></tr>
       </thead>
       <tbody id="diseaseRows"></tbody>
     </table>
-    <p class="micro" style="margin-top:14px">Цифры — приблизительные оценки ВОЗ, GBD, GLOBOCAN и профильных организаций. Округлены и не заменяют консультацию врача.</p>
+    <p class="micro" style="margin-top:14px" data-i18n="listMicro">Цифры — приблизительные оценки ВОЗ, GBD, GLOBOCAN и профильных организаций. Округлены и не заменяют консультацию врача.</p>
   </section>
 
   <section class="wrap sec" id="past">
     <div class="past" id="pastBox">
-      <h2 style="font-size:22px">Прожитые здесь жизни</h2>
-      <p class="sub">Сохраняются только в этом браузере. <button id="btnClearLives" style="color:var(--dim);text-decoration:underline;font-size:13px">Очистить</button></p>
+      <h2 style="font-size:22px" data-i18n="pastH2">Прожитые здесь жизни</h2>
+      <p class="sub"><span data-i18n="pastSub">Сохраняются только в этом браузере.</span> <button id="btnClearLives" style="color:var(--dim);text-decoration:underline;font-size:13px" data-i18n="pastClear">Очистить</button></p>
       <div class="plist" id="pastList"></div>
     </div>
   </section>
 
   <section class="wrap sec" id="help">
-    <h2>Тяжёлые темы</h2>
+    <h2 data-i18n="helpH2">Тяжёлые темы</h2>
     <div class="safety">
-      <h3>Здесь умирают. Так же часто, как в реальной статистике</h3>
-      <p>В симуляции есть смерть, тяжёлые диагнозы, боль, долги и отчаяние. Сцены не показываются подробно, а флажок «Убрать тяжёлые сцены» смягчает формулировки. Если вам сейчас тяжело, симуляция может подождать.</p>
-      <p>Если вы думаете о том, чтобы причинить себе вред, или просто больше не справляетесь — это не то, что нужно переживать в одиночку.</p>
+      <h3 data-i18n="helpH3">Здесь умирают. Так же часто, как в реальной статистике</h3>
+      <p data-i18n="helpP1">В симуляции есть смерть, тяжёлые диагнозы, боль, долги и отчаяние. Сцены не показываются подробно, а флажок «Убрать тяжёлые сцены» смягчает формулировки. Если вам сейчас тяжело, симуляция может подождать.</p>
+      <p data-i18n="helpP2">Если вы думаете о том, чтобы причинить себе вред, или просто больше не справляетесь — это не то, что нужно переживать в одиночку.</p>
       <div class="lines">
-        <div><b>Россия:</b> 8-800-2000-122 — бесплатно, круглосуточно</div>
-        <div><b>Экстренно:</b> 112</div>
-        <div><b>Мир:</b> findahelpline.com — линии в 130+ странах</div>
-        <div><b>Не один:</b> скажите вслух близкому человеку</div>
+        <div data-i18n-html="helpL1"><b>Россия:</b> 8-800-2000-122 — бесплатно, круглосуточно</div>
+        <div data-i18n-html="helpL2"><b>Экстренно:</b> 112</div>
+        <div data-i18n-html="helpL3"><b>Мир:</b> findahelpline.com — линии в 130+ странах</div>
+        <div data-i18n-html="helpL4"><b>Не один:</b> скажите вслух близкому человеку</div>
       </div>
     </div>
-    <p class="micro" style="margin-top:20px;max-width:44em">Симуляция образовательная: она не ставит диагноз, не назначает лечение и не заменяет врача. Если вас что-то беспокоит в собственном здоровье — это повод пойти к специалисту, а не прожить это здесь.</p>
+    <p class="micro" style="margin-top:20px;max-width:44em" data-i18n="helpMicro">Симуляция образовательная: она не ставит диагноз, не назначает лечение и не заменяет врача. Если вас что-то беспокоит в собственном здоровье — это повод пойти к специалисту, а не прожить это здесь.</p>
   </section>
 </main>
 
 <footer>
   <div class="wrap">
-    <div>«Один диагноз» — симуляция болезни. Цифры: ВОЗ (неинфекционные заболевания, 2019–2023), GLOBOCAN / IARC (2022), GBD 2019, IDF, UNAIDS, MSIF. Модель течения болезни — упрощение, а не прогноз.</div>
+    <div data-i18n="footText">«Один диагноз» — симуляция болезни. Цифры: ВОЗ (неинфекционные заболевания, 2019–2023), GLOBOCAN / IARC (2022), GBD 2019, IDF, UNAIDS, MSIF. Модель течения болезни — упрощение, а не прогноз.</div>
     <div class="frow">
       <span>v0.1</span>
-      <span>Ничего не отправляется на сервер</span>
-      <a href="#help">Помощь рядом</a>
-      <a href="#start">Начать заново</a>
+      <span data-i18n="footNoServer">Ничего не отправляется на сервер</span>
+      <a href="#help" data-i18n="footHelp">Помощь рядом</a>
+      <a href="#start" data-i18n="footRestart">Начать заново</a>
     </div>
   </div>
 </footer>
 
-<div class="sim" id="sim" role="dialog" aria-modal="true" aria-label="Симуляция болезни">
+<div class="sim" id="sim" role="dialog" aria-modal="true" data-i18n-aria="simAria" aria-label="Симуляция болезни">
   <div class="sim-inner">
     <div class="sim-top">
       <div class="sim-name"><span id="simDisease">—</span><small id="simPerson">—</small></div>
       <div class="sim-ctrl">
-        <button id="btnPause" title="Пауза (пробел)">Пауза</button>
+        <button id="btnPause" data-i18n-title="pauseTitle" title="Пауза (пробел)" data-i18n="pause">Пауза</button>
         <button class="spd on" data-spd="1">1×</button>
         <button class="spd" data-spd="2">2×</button>
         <button class="spd" data-spd="4">4×</button>
-        <button id="btnExit" class="ex">Выйти</button>
+        <button id="btnExit" class="ex" data-i18n="exit">Выйти</button>
       </div>
     </div>
     <div class="sim-meta">
       <div class="age"><span id="simAge">0</span><small id="simAgeWord">лет</small></div>
       <div class="year" id="simYear">2026</div>
       <div class="meters">
-        <div class="meter sym"><span>Симптомы</span><i><b id="mSym"></b></i></div>
-        <div class="meter ctl"><span>Контроль</span><i><b id="mCtl"></b></i></div>
-        <div class="meter life"><span>Жизнь</span><i><b id="mLife"></b></i></div>
+        <div class="meter sym"><span data-i18n="meterSym">Симптомы</span><i><b id="mSym"></b></i></div>
+        <div class="meter ctl"><span data-i18n="meterCtl">Контроль</span><i><b id="mCtl"></b></i></div>
+        <div class="meter life"><span data-i18n="meterLife">Жизнь</span><i><b id="mLife"></b></i></div>
       </div>
     </div>
     <div class="track"><i id="simBar"></i></div>
-    <div class="scrub"><span id="scrubL">начало</span><span id="scrubR"></span></div>
+    <div class="scrub"><span id="scrubL" data-i18n="scrubStart">начало</span><span id="scrubR"></span></div>
     <div class="feed" id="feed"></div>
   </div>
   <div class="panel" id="panel"><div class="pc" id="panelCard"></div></div>
 </div>
 
 <script>
+/* =====================================================================
+   0. ЯЗЫК. Русский и английский; выбор запоминается в браузере.
+   ===================================================================== */
+const LS_LANG = 'od.lang.v1';
+let L = (() => {
+  try { const v = localStorage.getItem(LS_LANG); if (v === 'ru' || v === 'en') return v; } catch (e) {}
+  const n = (navigator.language || 'ru').toLowerCase();
+  return n.indexOf('ru') === 0 ? 'ru' : 'en';
+})();
+const S = (ru, en) => (L === 'en' ? en : ru);
+
 /* =====================================================================
    1. ДАННЫЕ. Цифры — приблизительные опубликованные оценки: ВОЗ, GBD 2019,
    GLOBOCAN 2022, IDF 2021, UNAIDS 2023, MSIF 2020.
@@ -463,6 +482,7 @@ const NOW_YEAR = 2026;
 
 const COUNTRIES = [
   {id:'ru', name:'Россия',          access:.63, oop:.40, life:73},
+  {id:'by', name:'Беларусь',        access:.70, oop:.30, life:74},
   {id:'de', name:'Германия',        access:.93, oop:.12, life:81},
   {id:'us', name:'США',             access:.90, oop:.92, life:79},
   {id:'gb', name:'Великобритания',  access:.87, oop:.10, life:81},
@@ -800,6 +820,316 @@ const GEN = {
 };
 
 const SOURCES = 'ВОЗ (неинфекционные заболевания, 2019–2023), GLOBOCAN / IARC (2022), GBD 2019, IDF 2021, UNAIDS 2023, MSIF 2020';
+const SOURCES_EN = 'WHO (noncommunicable diseases, 2019–2023), GLOBOCAN / IARC (2022), GBD 2019, IDF 2021, UNAIDS 2023, MSIF 2020';
+
+/* ---- английский слой данных ---- */
+const EN_COUNTRY = {
+  ru:'Russia', by:'Belarus', de:'Germany', us:'USA', gb:'United Kingdom', fr:'France',
+  jp:'Japan', pl:'Poland', br:'Brazil', cn:'China', in:'India', id:'Indonesia',
+  mx:'Mexico', eg:'Egypt', ke:'Kenya', za:'South Africa', ng:'Nigeria'
+};
+
+const EN_DISEASE = {
+breast:{
+  name:'Breast cancer', group:'Oncology',
+  tagline:'About one in eight women in high-income countries will hear this diagnosis in her lifetime.',
+  symptoms:['a lump in the breast','a pull under the arm','skin like orange peel','discharge from the nipple'],
+  treat:['surgery','a course of chemotherapy','hormone therapy'],
+  late:['metastases in the bones','breathlessness when walking','severe weakness'],
+  onsetLine:'In the shower, by accident, your fingers find something that was not there before. Small, hard, it does not move.',
+  diagLine:'Mammogram, biopsy, ten days of waiting. Histology: a malignant tumour. The doctor speaks quickly and to the point; you hear only the word “cancer”.',
+  beats:['You learn to live by the cycle: a drip, a week of weakness, a week of almost normal life.',
+         'Your hair is gone. You buy a scarf and are surprised how well it suits you.',
+         'The follow-up scan is clear. The doctor says: “So far, so good.” The words “so far” now live beside you.'],
+  death:'advanced cancer',
+  arc:'usually curable if found early',
+  facts:[['2.3 m','new cases a year — the most common cancer in women (GLOBOCAN, 2022)'],
+         ['670k','deaths a year; survival depends heavily on the country']]
+},
+diabetes:{
+  name:'Type 2 diabetes', group:'Metabolism',
+  tagline:'A disease you can live with for thirty years — if you keep it in check every day.',
+  symptoms:['constant thirst','tiredness by evening','a cut on the foot that will not heal','blurred vision'],
+  treat:['metformin','diet and walking','checking blood sugar every day'],
+  late:['numb feet','one foot operation, then another','dialysis twice a week'],
+  onsetLine:'You drink glass after glass and still want water. By evening your legs ache, and the cut on your finger is in its third week of healing.',
+  diagLine:'A blood test: glycated haemoglobin 8.9%. “This is type 2 diabetes,” the doctor says, and adds that people live with it for decades.',
+  beats:['You learned to count carbohydrate units faster than you used to count money.',
+         'An evening talk with the endocrinologist: raise the dose or add a second drug.',
+         'Your foot is going numb. The doctor says “neuropathy” and asks you to take care of your feet.'],
+  death:'complications of diabetes',
+  arc:'decades under control; otherwise vessels, kidneys, feet',
+  facts:[['537 m','adults live with diabetes (IDF, 2021)'],
+         ['6.7 m','deaths a year are linked to diabetes']]
+},
+cad:{
+  name:'Coronary heart disease', group:'Heart and vessels',
+  tagline:'The most common cause of death in the world. It starts with one minute on the stairs.',
+  symptoms:['pressure behind the breastbone','breathlessness on stairs','heaviness in the left arm','cold sweat'],
+  treat:['aspirin and statins','stenting','bypass surgery'],
+  late:['breathlessness at rest','swollen legs','heart failure'],
+  onsetLine:'On the fourth floor you stop. Something squeezes your chest as if a knee were pressed into it; a minute later it lets go.',
+  diagLine:'The ECG shows changes. They keep you in hospital and talk about an artery narrowed by seventy percent.',
+  beats:['You carry nitroglycerin in your pocket the way you carry keys.',
+         'Six months without an attack. You almost believed it had passed.',
+         'The doctor offers surgery and names the odds honestly.'],
+  death:'heart attack',
+  arc:'a stent, a bypass or a heart attack — hours decide',
+  facts:[['17.9 m','deaths from heart and vessel disease a year (WHO)'],
+         ['41 m','deaths from noncommunicable diseases every year']]
+},
+stroke:{
+  name:'Stroke', group:'Brain and vessels',
+  tagline:'A stroke gives no warning. The first hours decide everything — and where you were during them.',
+  symptoms:['a hand suddenly numb','face drooping','a word that will not come','severe dizziness'],
+  treat:['thrombolysis in the first hours','rehabilitation','blood pressure medication'],
+  late:['the left hand will not obey','hard to find words','needs help with daily life'],
+  onsetLine:'In the morning you cannot make a fist with your right hand. A spoon falls. The words that come out are not the ones you meant.',
+  diagLine:'A CT scan. The doctor says “ischaemic stroke” and counts hours, not days.',
+  beats:['You learn to hold a spoon again. The first three weeks are the hardest.',
+         'Speech comes back in pieces. Sometimes you stop mid-sentence and are angry at yourself.',
+         'You go out into the yard with a stick. A neighbour says hello — so he recognised you.'],
+  death:'the aftermath of a stroke',
+  arc:'survivors often lose speech or movement',
+  facts:[['12.2 m','new strokes a year (GBD, 2019)'],
+         ['6.5 m','deaths a year — the second most common cause worldwide']]
+},
+copd:{
+  name:'COPD', group:'Lungs',
+  tagline:'A disease almost always caused by what a person did with their own hands.',
+  symptoms:['smoker’s cough in the morning','breathlessness when walking','wheezing in the chest','phlegm'],
+  treat:['bronchodilators','inhalers','oxygen at home'],
+  late:['breathlessness at rest','frequent flare-ups','heart weakness'],
+  onsetLine:'You climb to your floor and realise you are breathing through your mouth. The morning cough was always there, but now it does not pass by noon.',
+  diagLine:'Spirometry. “You exhale forty percent of normal,” the doctor says, and asks how many years you have smoked.',
+  beats:['The inhaler now lives in your jacket pocket, next to the keys.',
+         'You quit in your fourteenth year of smoking. The doctor said “better late than never” — and that is true.',
+         'In winter every flare-up takes another piece of your lungs.'],
+  death:'respiratory failure',
+  arc:'slow suffocation with flare-ups',
+  facts:[['3.5 m','deaths a year (WHO)'],
+         ['≈5%','of all deaths worldwide are caused by COPD']]
+},
+asthma:{
+  name:'Asthma', group:'Lungs',
+  tagline:'You can run marathons with it — or suffocate for want of a two-dollar inhaler.',
+  symptoms:['wheezing breath','attacks at night','a tight chest','coughing after running'],
+  treat:['a reliever inhaler','a steroid inhaler','an action plan for an attack'],
+  late:['night attacks','missed school and work','rare severe attacks'],
+  onsetLine:'At night you wake because you cannot breathe all the way out. The wheeze can be heard from the next room.',
+  diagLine:'Peak flow and a bronchodilator test. “This is asthma,” the doctor says. “People live ordinary lives with it, if it stays controlled.”',
+  beats:['The inhaler is always in your backpack. Friends are used to you checking your pocket before leaving.',
+         'Six months without a night attack. You have almost forgotten what it was like.',
+         'An attack in a strange city. You find a pharmacy and understand how much depends on where you are.'],
+  death:'a severe attack',
+  arc:'controllable; deaths are almost always preventable',
+  facts:[['262 m','people live with asthma (WHO)'],
+         ['most','deaths occur in low-income countries']]
+},
+depression:{
+  name:'Depression', group:'Mind',
+  tagline:'The most widespread illness in the world — and the one most often treated with silence.',
+  symptoms:['no strength to get up','nothing brings joy','sleep is broken','hard to think or speak'],
+  treat:['talking therapy','antidepressants','sleep and movement routine'],
+  late:['months in bed','loss of work','thoughts of disappearing'],
+  onsetLine:'You wake up and stare at the ceiling for several minutes. It used to be interesting what came next; now it is not.',
+  diagLine:'The psychiatrist asks questions that are hard to answer, and says: “This is depression. It is treatable.”',
+  beats:['You learn to notice the day it got easier — and not to be frightened when it gets worse again.',
+         'The pills do not work at once. The doctor asks you not to stop in the third week.',
+         'The first evening you laugh for real. You remember it.'],
+  death:'complications of long-term depression',
+  arc:'relapses; with treatment, a return to life',
+  facts:[['280 m','people live with depression (WHO, 2023)'],
+         ['≈75%','in low- and middle-income countries get no treatment']]
+},
+hiv:{
+  name:'HIV', group:'Infections',
+  tagline:'Today it is a chronic illness. But only where the pills are.',
+  symptoms:['a fever that will not pass','swollen lymph nodes','weight loss','night sweats'],
+  treat:['antiretroviral therapy','regular tests','protecting your partner'],
+  late:['opportunistic infections','severe weight loss','wasting'],
+  onsetLine:'Three weeks of fever that no test explains. At night your shirt is soaked.',
+  diagLine:'An HIV test. Fifteen minutes later the doctor gives the result and adds: “People live to old age with this now. The main thing is to start treatment.”',
+  beats:['One pill a day. The viral load falls to undetectable.',
+         'You decide whom to tell. One friend says, “So what?” — and it turns out to be the best answer.',
+         'Your tests have been stable for six years. The doctor says you will outlive many people without a diagnosis.'],
+  death:'complications of HIV',
+  arc:'controlled by therapy to near normal',
+  facts:[['39.9 m','people live with HIV (UNAIDS, 2023)'],
+         ['0.6 m','deaths a year — half the 2010 figure']]
+},
+tb:{
+  name:'Tuberculosis', group:'Infections',
+  tagline:'A curable disease that kills 1.25 million people a year — almost all of them in poor countries.',
+  symptoms:['a cough for over three weeks','night sweats','fever by evening','blood in the phlegm'],
+  treat:['four drugs for six months','monthly tests','isolation in the first weeks'],
+  late:['cavities in the lungs','drug resistance','coughing blood'],
+  onsetLine:'The cough is in its third month. You no longer notice it until someone moves away from you on the bus.',
+  diagLine:'X-ray, sputum, a test. “Tuberculosis,” the doctor says. “Six months of treatment and you will be well. The course cannot be interrupted.”',
+  beats:['Four pills in the morning on an empty stomach. The first weeks bring nausea and orange urine.',
+         'Month three. The cough is gone. For the first time you wonder whether to stop the pills.',
+         'The sputum is clear. They take you off the register — the rare word “cured”.'],
+  death:'pulmonary tuberculosis',
+  arc:'curable in six months if the course is completed',
+  facts:[['10.8 m','people fall ill each year (WHO, 2023)'],
+         ['1.25 m','deaths a year — more than any other infection']]
+},
+parkinson:{
+  name:'Parkinson’s disease', group:'Brain',
+  tagline:'The disease where the medicine works best — and, over time, works less well.',
+  symptoms:['the right hand trembles at rest','buttons are hard to fasten','handwriting has grown small','hard to start a step'],
+  treat:['levodopa','physical therapy','surgery in severe cases'],
+  late:['freezing while walking','falls','difficulty swallowing'],
+  onsetLine:'You notice your right hand trembling while you are simply sitting. Then that buttons have become strangely small.',
+  diagLine:'The neurologist asks you to walk the corridor, move a finger, write a sentence. “It looks like Parkinson’s,” he says.',
+  beats:['A pill gives you back to yourself for two or three hours. You begin to count time by it.',
+         'You stopped being ashamed of the tremor. Others stopped asking.',
+         'Late in the evening you freeze in the doorway and wait for your body to be yours again.'],
+  death:'complications of Parkinson’s disease',
+  arc:'slow movement; dementia in the late stages',
+  facts:[['8.5 m','people live with Parkinson’s (GBD, 2019)'],
+         ['2×','more cases than 25 years ago']]
+},
+alzheimer:{
+  name:'Alzheimer’s disease', group:'Brain',
+  tagline:'The most expensive disease in the world: it takes not only memory but everyone around.',
+  symptoms:['forgot why you came to the kitchen','names get mixed up','lost in a familiar neighbourhood','no longer recognise those close to you'],
+  treat:['drugs that slow progression','a day centre','support for the family'],
+  late:['round-the-clock care','you do not recognise your family','difficulty swallowing'],
+  onsetLine:'You go back into the room twice to remember why you came. The shopping list stayed at home — you were holding it.',
+  diagLine:'Memory tests, an MRI, talks with relatives. Six months later the doctor gives it a name: dementia, probably Alzheimer’s type.',
+  beats:['You write notes to yourself and do not always understand what they say.',
+         'The family pretends nothing has changed. You value that more than anything.',
+         'Someone is with you during the day. You no longer remember who.'],
+  death:'dementia',
+  arc:'a long goodbye; four to thirteen years',
+  facts:[['55 m','people live with dementia (WHO)'],
+         ['10 m','new cases a year']]
+},
+ms:{
+  name:'Multiple sclerosis', group:'Brain',
+  tagline:'A disease of the young that runs differently in every person.',
+  symptoms:['the left foot goes numb','double vision','strength drains from a leg','deep fatigue from a simple task'],
+  treat:['steroids during relapses','disease-modifying drugs','rehabilitation'],
+  late:['walking with a stick','difficulty holding urine','hands do not obey'],
+  onsetLine:'In the morning your left foot cannot feel the floor. A week later it passes and you almost forget. A year later it happens again.',
+  diagLine:'The MRI shows lesions. The neurologist says “multiple sclerosis” — and at once adds that the disease is very different in different people.',
+  beats:['A relapse arrives without warning and leaves, taking a little less of you with it.',
+         'You have learned to plan life with room for the bad weeks.',
+         'Summer is worse: heat drains you faster than the disease.'],
+  death:'complications of multiple sclerosis',
+  arc:'relapses and remissions; later, a stick',
+  facts:[['2.8 m','people live with MS (MSIF)'],
+         ['70%','of cases begin between 20 and 40']]
+},
+schizophrenia:{
+  name:'Schizophrenia', group:'Mind',
+  tagline:'One of the most stigmatised illnesses in the world — and one of the most treatable, where treatment exists.',
+  symptoms:['thoughts will not come together','a feeling of being watched','a voice no one else hears','you stopped leaving your room'],
+  treat:['antipsychotics','therapy and support','help for the family'],
+  late:['months without treatment','loss of housing and work','severe relapses'],
+  onsetLine:'You stop understanding what others are talking about. Sometimes a thought breaks off in the middle and does not come back.',
+  diagLine:'After several weeks you remember only in fragments, the doctor names the diagnosis and says it is treatable — but not with one course.',
+  beats:['The pills silence the voices but make you slower. You choose what to endure.',
+         'You work again — not at what you wanted, but you work.',
+         'People on the street look at you strangely. You are no longer sure they are looking.'],
+  death:'complications of a mental illness',
+  arc:'relapses; with treatment, a long life',
+  facts:[['24 m','people live with schizophrenia (WHO, 2022)'],
+         ['15 years','— the average loss of life expectancy']]
+},
+ra:{
+  name:'Rheumatoid arthritis', group:'Joints',
+  tagline:'Not an old person’s disease: it usually starts at 40–50, and in women three times as often.',
+  symptoms:['fingers ache in the morning','stiffness until noon','swollen joints','tiredness for no reason'],
+  treat:['disease-modifying drugs','biologic therapy','hand exercises'],
+  late:['deformed hands','hard to hold a cup','joint surgery'],
+  onsetLine:'In the morning your fingers will not bend. You warm your hands under the water before you can pick up a cup.',
+  diagLine:'Tests for rheumatoid factor, X-rays of the hands. “You came at the right time,” the rheumatologist says. “If we control it now, the joints will last.”',
+  beats:['Morning stiffness is measured in hours. A good day is under an hour.',
+         'You change jobs for one where hands do less.',
+         'Second year of remission. You had forgotten you once counted spoons in the morning.'],
+  death:'complications of rheumatoid arthritis',
+  arc:'remissions and deformed joints',
+  facts:[['18 m','people live with rheumatoid arthritis (WHO)'],
+         ['3 in 4','cases are women']]
+},
+crohn:{
+  name:'Crohn’s disease', group:'Gut',
+  tagline:'A disease that makes the toilet the centre of your planning.',
+  symptoms:['pain in the lower right side','diarrhoea for months','weight loss','blood in the stool'],
+  treat:['anti-inflammatory drugs','biologic therapy','bowel surgery'],
+  late:['fistulas','several operations','short bowel'],
+  onsetLine:'The pain is on the right, low down. You blame the food. A month later you know where every toilet in the neighbourhood is.',
+  diagLine:'A colonoscopy. The doctor shows the image and says: “Crohn’s disease. Chronic, but people live with it.”',
+  beats:['You know what you can eat and what you cannot. The list is shorter than you would like.',
+         'Biologic therapy costs as much as a used car. In some countries it is free.',
+         'Six months of remission. You eat ice cream and hardly think about the consequences.'],
+  death:'complications of Crohn’s disease',
+  arc:'flare-ups; sometimes surgery',
+  facts:[['>1 m','people in North America and Europe'],
+         ['fastest','growth in cases is among young adults']]
+},
+cf:{
+  name:'Cystic fibrosis', group:'Rare diseases',
+  tagline:'A disease you are born with. Every day is treatment, and every day is worth it.',
+  symptoms:['a cough with thick phlegm','salty-tasting skin','poor weight gain','frequent pneumonia'],
+  treat:['daily airway clearance','nebulisers and antibiotics','lung transplant'],
+  late:['breathlessness at rest','oxygen at home','lung transplant'],
+  onsetLine:'You are eighteen months old and not yet talking. Your mother notices your skin tastes salty and the cough will not go away.',
+  diagLine:'A sweat test. The doctor explains to your parents: “This is cystic fibrosis. You will have to treat it every day.”',
+  beats:['Every morning begins with half an hour of airway clearance. Then school, like everyone else.',
+         'In hospital you meet other children like you. Some stop coming.',
+         'You are seventeen and know more about your disease than the local doctor.'],
+  death:'respiratory failure',
+  arc:'treatment every day from birth',
+  facts:[['1 in 3,000','newborns in Europe'],
+         ['40+ years','median survival where care is available']]
+}
+};
+
+const GEN_EN = {
+  calm:[
+    'A year passes almost unchanged. “Almost” is the best word for this disease.',
+    'You go back to work. Colleagues do not ask, and you are grateful for that.',
+    'A holiday. For the first time in a long while you go two days without thinking about the disease.',
+    'A birthday. You wish for something money can no longer buy.',
+    'You have got into the habit of writing the good days down.',
+    'An argument about the dishes, someone’s birthday, repairs. Life goes on like everyone else’s.'
+  ],
+  bad:[
+    'A flare-up. For three weeks you live from pill to pill.',
+    'The doctor changes the regimen and asks you to wait a month. The month is long.',
+    'You snap at someone close to you and then apologise for a long time.',
+    'The queue at the clinic. An hour and a half on a plastic chair.',
+    'A night without sleep, then a day in which no one needs you.'
+  ],
+  money:[
+    'Treatment costs more than you expected. You borrow money.',
+    'Insurance does not cover everything. You pay the difference yourself.',
+    'You give up a trip to pay for a course.'
+  ],
+  close:[
+    'Someone close stays the night. Just in case.',
+    'Your mother calls every day and asks how you are. You say, “fine”.',
+    'A friend arrives with soup and asks no questions. It is the best visit in a month.'
+  ]
+};
+
+const RU_COUNTRIES = COUNTRIES.map(c => ({...c}));
+const RU_DISEASES = JSON.parse(JSON.stringify(DISEASES));
+const RU_GEN = JSON.parse(JSON.stringify(GEN));
+
+function localizeData() {
+  COUNTRIES.forEach((c, i) => { c.name = L === 'en' ? (EN_COUNTRY[c.id] || c.name) : RU_COUNTRIES[i].name; });
+  DISEASES.forEach((d, i) => {
+    const base = RU_DISEASES[i];
+    if (L === 'en' && EN_DISEASE[d.id]) Object.assign(d, EN_DISEASE[d.id]);
+    else Object.assign(d, base);
+  });
+  Object.keys(GEN).forEach(k => { GEN[k] = L === 'en' ? GEN_EN[k].slice() : RU_GEN[k].slice(); });
+}
+localizeData();
 
 /* =====================================================================
    2. ДВИЖОК ЖИЗНИ. Модель, а не прогноз.
@@ -834,76 +1164,89 @@ function plural(n, one, few, many) {
   if (b === 1) return one;
   return many;
 }
-const yearsRu = n => { n = Math.max(0, Math.round(n)); return n + ' ' + plural(n, 'год', 'года', 'лет'); };
-const fmtInt = n => new Intl.NumberFormat('ru-RU').format(Math.max(0, Math.floor(n)));
+const yrs = n => { n = Math.max(0, Math.round(n)); return L === 'en' ? n + (n === 1 ? ' year' : ' years') : n + ' ' + plural(n, 'год', 'года', 'лет'); };
+const ageWord = n => L === 'en' ? (Math.round(n) === 1 ? 'year' : 'years') : plural(n, 'год', 'года', 'лет');
+const fmtInt = n => new Intl.NumberFormat(L === 'en' ? 'en-US' : 'ru-RU').format(Math.max(0, Math.floor(n)));
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
 /* ---- содержание решений ---- */
 function decisionDef(life, id) {
   const d = life.d, s = life.s, acute = d.course === 'acute', child = !!d.child;
   const P = life.pending ? life.pending.n : 1;
-  const kick = `Пауза ${P} · ${Math.floor(NOW_YEAR + s.t)} · ${yearsRu(Math.floor(life.onset + s.t))}`;
+  const kick = S(`Пауза ${P} · ${Math.floor(NOW_YEAR + s.t)} · ${yrs(Math.floor(life.onset + s.t))}`,
+                 `Pause ${P} · ${Math.floor(NOW_YEAR + s.t)} · ${yrs(Math.floor(life.onset + s.t))}`);
 
   if (id === 'early') {
     return {
-      id, kick, title: 'Первые признаки',
+      id, kick, title: S('Первые признаки', 'First signs'),
       text: child
-        ? `Родители замечают: ${d.symptoms[0]}. Участковый врач пожимает плечами и советует подождать.`
-        : `«${d.symptoms[0][0].toUpperCase() + d.symptoms[0].slice(1)}» не проходит. ${acute ? 'Это началось несколько минут назад.' : 'Прошло уже несколько недель.'}`,
-      note: 'Позднее обращение — одна из главных причин, по которым одна и та же болезнь в разных странах заканчивается по-разному.',
+        ? S(`Родители замечают: ${d.symptoms[0]}. Участковый врач пожимает плечами и советует подождать.`,
+            `Your parents notice: ${d.symptoms[0]}. The local doctor shrugs and suggests waiting.`)
+        : S(`«${d.symptoms[0][0].toUpperCase() + d.symptoms[0].slice(1)}» не проходит. ${acute ? 'Это началось несколько минут назад.' : 'Прошло уже несколько недель.'}`,
+            `“${d.symptoms[0][0].toUpperCase() + d.symptoms[0].slice(1)}” does not go away. ${acute ? 'It started a few minutes ago.' : 'It has been several weeks now.'}`),
+      note: S('Позднее обращение — одна из главных причин, по которым одна и та же болезнь в разных странах заканчивается по-разному.',
+              'Late presentation is one of the main reasons the same disease ends differently in different countries.'),
       options: acute
-        ? [{k: 'now', label: 'Вызвать скорую сейчас', hint: 'Счёт идёт на минуты. Это самое неприятное и самое правильное.'},
-           {k: 'wait', label: 'Подождать до утра', hint: 'Может, пройдёт. Может, нет.'},
-           {k: 'web', label: 'Выпить обезболивающее и лечь', hint: 'Знакомое решение. Тело не согласится.'}]
-        : [{k: 'now', label: 'Идти к врачу на этой неделе', hint: 'Запись, очередь, анализы. Неприятно, но быстро.'},
-           {k: 'wait', label: 'Подождать — может, само пройдёт', hint: 'Ещё месяц. Потом ещё месяц.'},
-           {k: 'web', label: 'Сначала поискать в интернете', hint: 'Ночные форумы, страшные списки болезней, никакой ясности.'}]
+        ? [{k: 'now', label: S('Вызвать скорую сейчас', 'Call an ambulance now'), hint: S('Счёт идёт на минуты. Это самое неприятное и самое правильное.', 'Minutes count. The most unpleasant and the most correct thing to do.')},
+           {k: 'wait', label: S('Подождать до утра', 'Wait until morning'), hint: S('Может, пройдёт. Может, нет.', 'Maybe it will pass. Maybe not.')},
+           {k: 'web', label: S('Выпить обезболивающее и лечь', 'Take a painkiller and lie down'), hint: S('Знакомое решение. Тело не согласится.', 'A familiar decision. Your body will disagree.')}]
+        : [{k: 'now', label: S('Идти к врачу на этой неделе', 'See a doctor this week'), hint: S('Запись, очередь, анализы. Неприятно, но быстро.', 'An appointment, a queue, tests. Unpleasant but quick.')},
+           {k: 'wait', label: S('Подождать — может, само пройдёт', 'Wait — maybe it will pass'), hint: S('Ещё месяц. Потом ещё месяц.', 'Another month. Then another month.')},
+           {k: 'web', label: S('Сначала поискать в интернете', 'Search the internet first'), hint: S('Ночные форумы, страшные списки болезней, никакой ясности.', 'Night forums, frightening lists of diseases, no clarity.')}]
     };
   }
   if (id === 'tests') {
     return {
-      id, kick, title: 'Обследование',
-      text: 'Врач предлагает дообследование. Оно стоит денег и времени — и показывает, с чем именно вы имеете дело.',
-      note: 'От точности обследования зависит почти весь дальнейший сценарий.',
+      id, kick, title: S('Обследование', 'Tests'),
+      text: S('Врач предлагает дообследование. Оно стоит денег и времени — и показывает, с чем именно вы имеете дело.',
+              'The doctor suggests further tests. They cost money and time — and show exactly what you are dealing with.'),
+      note: S('От точности обследования зависит почти весь дальнейший сценарий.',
+              'Almost the whole later story depends on how precise the tests are.'),
       options: [
-        {k: 'full', label: 'Пройти всё, что предложили', hint: 'Полная картина. Дороже и дольше.'},
-        {k: 'basic', label: 'Только обязательный минимум', hint: 'Быстрее и дешевле. Часть картины останется скрытой.'},
-        {k: 'none', label: 'Пока не хочу знать', hint: 'Отложить. Иногда это работает — недолго.'}
+        {k: 'full', label: S('Пройти всё, что предложили', 'Do everything they suggested'), hint: S('Полная картина. Дороже и дольше.', 'The full picture. Dearer and longer.')},
+        {k: 'basic', label: S('Только обязательный минимум', 'Only the bare minimum'), hint: S('Быстрее и дешевле. Часть картины останется скрытой.', 'Faster and cheaper. Part of the picture stays hidden.')},
+        {k: 'none', label: S('Пока не хочу знать', 'I do not want to know yet'), hint: S('Отложить. Иногда это работает — недолго.', 'Put it off. Sometimes that works — for a while.')}
       ]
     };
   }
   if (id === 'treat') {
     return {
-      id, kick, title: 'Лечение',
-      text: `Врач называет схему: ${d.treat[0]}, затем ${d.treat[1]}. И честно говорит, чего ждать.`,
-      note: 'Приверженность лечению — самый сильный фактор, который человек контролирует сам.',
+      id, kick, title: S('Лечение', 'Treatment'),
+      text: S(`Врач называет схему: ${d.treat[0]}, затем ${d.treat[1]}. И честно говорит, чего ждать.`,
+              `The doctor names the regimen: ${d.treat[0]}, then ${d.treat[1]}. And tells you honestly what to expect.`),
+      note: S('Приверженность лечению — самый сильный фактор, который человек контролирует сам.',
+              'Adherence is the strongest factor a person controls themselves.'),
       options: [
-        {k: 'follow', label: 'Следовать схеме', hint: 'Регулярно, скучно, по протоколу.'},
-        {k: 'mix', label: 'Добавить народные средства', hint: 'Врач против. Знакомые — за.'},
-        {k: 'refuse', label: 'Отказаться от лечения', hint: 'Некоторое время это кажется свободой.'}
+        {k: 'follow', label: S('Следовать схеме', 'Follow the regimen'), hint: S('Регулярно, скучно, по протоколу.', 'Regularly, boringly, by protocol.')},
+        {k: 'mix', label: S('Добавить народные средства', 'Add folk remedies'), hint: S('Врач против. Знакомые — за.', 'The doctor is against. Your acquaintances are for.')},
+        {k: 'refuse', label: S('Отказаться от лечения', 'Refuse treatment'), hint: S('Некоторое время это кажется свободой.', 'For a while it feels like freedom.')}
       ]
     };
   }
   if (id === 'disclose') {
     return {
-      id, kick, title: 'Кому сказать',
-      text: 'Болезнь уже часть вашей жизни. О ней можно молчать — или разделить её с кем-то.',
-      note: 'Поддержка близких не лечит, но заметно меняет качество жизни.',
+      id, kick, title: S('Кому сказать', 'Whom to tell'),
+      text: S('Болезнь уже часть вашей жизни. О ней можно молчать — или разделить её с кем-то.',
+              'The disease is already part of your life. You can keep quiet about it — or share it with someone.'),
+      note: S('Поддержка близких не лечит, но заметно меняет качество жизни.',
+              'Support does not cure, but it noticeably changes the quality of life.'),
       options: [
-        {k: 'tell', label: 'Рассказать близким и на работе', hint: 'Честно, с последствиями. Иногда — с неожиданной поддержкой.'},
-        {k: 'hide', label: 'Скрывать до последнего', hint: 'Никто не спросит. И никто не поможет.'},
-        {k: 'community', label: 'Найти тех, кто живёт с этим', hint: 'Люди, которые понимают без объяснений.'}
+        {k: 'tell', label: S('Рассказать близким и на работе', 'Tell family and colleagues'), hint: S('Честно, с последствиями. Иногда — с неожиданной поддержкой.', 'Honestly, with consequences. Sometimes with unexpected support.')},
+        {k: 'hide', label: S('Скрывать до последнего', 'Hide it as long as possible'), hint: S('Никто не спросит. И никто не поможет.', 'No one will ask. And no one will help.')},
+        {k: 'community', label: S('Найти тех, кто живёт с этим', 'Find people living with this'), hint: S('Люди, которые понимают без объяснений.', 'People who understand without explanation.')}
       ]
     };
   }
   return {
-    id, kick, title: 'Последний отрезок',
-    text: 'Болезнь больше не отступает. Врач говорит об этом прямо и спрашивает, чего вы хотите.',
-    note: 'Паллиативная помощь — это не отказ от лечения, а помощь другого рода: чтобы не болело и не было страшно.',
+    id, kick, title: S('Последний отрезок', 'The last stretch'),
+    text: S('Болезнь больше не отступает. Врач говорит об этом прямо и спрашивает, чего вы хотите.',
+            'The disease no longer retreats. The doctor says so plainly and asks what you want.'),
+    note: S('Паллиативная помощь — это не отказ от лечения, а помощь другого рода: чтобы не болело и не было страшно.',
+            'Palliative care is not giving up treatment but a different kind of help: so that it does not hurt and is not frightening.'),
     options: [
-      {k: 'keep', label: 'Продолжать лечение до конца', hint: 'Ещё курсы. Ещё надежда. Ещё цена.'},
-      {k: 'pall', label: 'Сосредоточиться на качестве жизни', hint: 'Меньше боли, больше тепла. Медицина рядом.'},
-      {k: 'trial', label: 'Попробовать экспериментальное лечение', hint: 'Шанс. Лотерея. Дорого.'}
+      {k: 'keep', label: S('Продолжать лечение до конца', 'Keep treating to the end'), hint: S('Ещё курсы. Ещё надежда. Ещё цена.', 'More courses. More hope. More cost.')},
+      {k: 'pall', label: S('Сосредоточиться на качестве жизни', 'Focus on quality of life'), hint: S('Меньше боли, больше тепла. Медицина рядом.', 'Less pain, more warmth. Medicine nearby.')},
+      {k: 'trial', label: S('Попробовать экспериментальное лечение', 'Try an experimental treatment'), hint: S('Шанс. Лотерея. Дорого.', 'A chance. A lottery. Expensive.')}
     ]
   };
 }
@@ -969,16 +1312,18 @@ class Life {
       if (!this.epilogue && s.t > (this.curedAt || 0) + 1.6) {
         this.epilogue = true;
         this.push('good', this.soft
-          ? 'Проходит ещё год. Вы всё реже вспоминаете об этом времени.'
-          : 'Проходит ещё год. Вы всё реже вспоминаете об этом времени — и всё чаще удивляетесь, что оно было.');
+          ? S('Проходит ещё год. Вы всё реже вспоминаете об этом времени.',
+              'Another year passes. You think about that time less and less.')
+          : S('Проходит ещё год. Вы всё реже вспоминаете об этом времени — и всё чаще удивляетесь, что оно было.',
+              'Another year passes. You think about that time less and less — and more and more often you are surprised that it happened.'));
       }
       return;
     }
     if (!s.treated && s.t > 1.1 && this.rng() < .45) {
       this.push('bad', this.take([
-        'Вы откладываете визит. Болезнь не откладывается.',
-        'Знакомые говорят: «Ты плохо выглядишь». Вы отвечаете, что всё нормально.',
-        'Вы ищете причины не идти в больницу и находите их.'
+        S('Вы откладываете визит. Болезнь не откладывается.', 'You put off the visit. The disease does not.'),
+        S('Знакомые говорят: «Ты плохо выглядишь». Вы отвечаете, что всё нормально.', 'People say, “You look bad.” You say you are fine.'),
+        S('Вы ищете причины не идти в больницу и находите их.', 'You look for reasons not to go to hospital and find them.')
       ]));
       return;
     }
@@ -1002,14 +1347,18 @@ class Life {
     if (id === 'early') {
       if (idx === 0) {
         s.delay = rnd(this.rng, .1, .3); this.mult *= 1.05; s.money = clamp(s.money - 4);
-        this.push('calm', 'Запись через три дня. Врач слушает долго и назначает анализы.');
+        this.push('calm', S('Запись через три дня. Врач слушает долго и назначает анализы.',
+                            'An appointment in three days. The doctor listens for a long time and orders tests.'));
       } else if (idx === 1) {
         s.delay = rnd(this.rng, 1.1, 2.3); this.mult *= 1 - d.delayPenalty * 1.05; s.quality = clamp(s.quality - 4);
-        this.push('bad', 'Вы ждёте. Сначала неделю, потом ещё месяц. Становится хуже — но привычно.');
-        if (d.course === 'acute') this.push('bad', 'Ночью становится совсем плохо. Скорая приезжает через сорок минут.');
+        this.push('bad', S('Вы ждёте. Сначала неделю, потом ещё месяц. Становится хуже — но привычно.',
+                           'You wait. A week first, then another month. It gets worse — but familiar.'));
+        if (d.course === 'acute') this.push('bad', S('Ночью становится совсем плохо. Скорая приезжает через сорок минут.',
+                                                     'At night it gets much worse. The ambulance arrives in forty minutes.'));
       } else {
         s.delay = rnd(this.rng, .8, 1.4); this.mult *= 1 - d.delayPenalty * .55; s.quality = clamp(s.quality - 5);
-        this.push('calm', 'Вы читаете форумы до утра. Диагнозов в голове — семь, все страшные.');
+        this.push('calm', S('Вы читаете форумы до утра. Диагнозов в голове — семь, все страшные.',
+                            'You read forums until morning. Seven diagnoses in your head, all frightening.'));
       }
       this.push('note', def.note);
       this.schedule('tests', s.delay);
@@ -1017,13 +1366,16 @@ class Life {
     else if (id === 'tests') {
       if (idx === 0) {
         s.money = clamp(s.money - (11 + 16 * d.cost)); this.mult *= 1.07;
-        this.push('calm', 'Полное обследование. Снимки, кровь, биопсия — всё, чтобы увидеть картину целиком.');
+        this.push('calm', S('Полное обследование. Снимки, кровь, биопсия — всё, чтобы увидеть картину целиком.',
+                            'A full work-up. Scans, blood, a biopsy — everything to see the whole picture.'));
       } else if (idx === 1) {
         s.money = clamp(s.money - (4 + 6 * d.cost)); this.mult *= .98;
-        this.push('calm', 'Вы сдаёте обязательный минимум. Картина остаётся неполной, но времени это экономит.');
+        this.push('calm', S('Вы сдаёте обязательный минимум. Картина остаётся неполной, но времени это экономит.',
+                            'You take the bare minimum. The picture stays incomplete, but it saves time.'));
       } else {
         this.mult *= .90; s.quality = clamp(s.quality - 4);
-        this.push('bad', 'Вы уходите из кабинета, не дождавшись результата. Ещё полгода вы живёте как раньше.');
+        this.push('bad', S('Вы уходите из кабинета, не дождавшись результата. Ещё полгода вы живёте как раньше.',
+                           'You leave the office without waiting for the result. For another six months you live as before.'));
       }
       this.push('big', d.diagLine);
       this.push('note', def.note);
@@ -1032,23 +1384,28 @@ class Life {
     else if (id === 'treat') {
       if (idx === 0) {
         s.treated = true; s.adherence = .9; s.money = clamp(s.money - 12 * d.cost); this.mult *= 1.12;
-        this.push('calm', `Вы начинаете: ${d.treat[0]}, затем ${d.treat[1]}. Это становится частью расписания.`);
+        this.push('calm', S(`Вы начинаете: ${d.treat[0]}, затем ${d.treat[1]}. Это становится частью расписания.`,
+                            `You begin: ${d.treat[0]}, then ${d.treat[1]}. It becomes part of the schedule.`));
       } else if (idx === 1) {
         s.treated = true; s.adherence = .55; s.money = clamp(s.money - 7 * d.cost); this.mult *= .95;
-        this.push('calm', 'Вы делаете назначенное — и добавляете к нему то, что советуют знакомые. Врач недоволен, но вы решаете, что хуже не будет.');
+        this.push('calm', S('Вы делаете назначенное — и добавляете к нему то, что советуют знакомые. Врач недоволен, но вы решаете, что хуже не будет.',
+                            'You do what was prescribed — and add what acquaintances recommend. The doctor is unhappy, but you decide it cannot hurt.'));
       } else {
         s.treated = false; s.adherence = .1; this.mult *= .58; s.quality = clamp(s.quality + 2);
-        this.push('bad', 'Вы решаете не лечиться. Некоторое время это кажется свободой.');
+        this.push('bad', S('Вы решаете не лечиться. Некоторое время это кажется свободой.',
+                           'You decide not to be treated. For a while it feels like freedom.'));
       }
       if (d.course === 'curable' && s.treated) {
         const chance = clamp01(this.cureP * (.62 + .5 * s.adherence) * (1 - (s.delay > 1 ? .25 : 0)));
         if (this.rng() < chance) {
           s.cured = true; this.curedAt = s.t;
           this.endT = s.t + 3.4;
-          this.push('good', 'Ремиссия. Через полгода контрольный снимок чистый. Врач говорит слово «излечение» осторожно, но говорит.');
+          this.push('good', S('Ремиссия. Через полгода контрольный снимок чистый. Врач говорит слово «излечение» осторожно, но говорит.',
+                              'Remission. Six months later the follow-up scan is clear. The doctor says the word “cure” carefully, but he says it.'));
         } else {
           this.mult *= .8;
-          this.push('bad', 'Болезнь отступает не полностью. Врач говорит: «Пока держим».');
+          this.push('bad', S('Болезнь отступает не полностью. Врач говорит: «Пока держим».',
+                             'The disease retreats only partly. The doctor says: “For now we hold it.”'));
         }
       }
       this.push('note', def.note);
@@ -1060,27 +1417,34 @@ class Life {
     else if (id === 'disclose') {
       if (idx === 0) {
         s.disclosed = true; s.quality = clamp(s.quality + 7); s.money = clamp(s.money - 6); this.mult *= 1.03;
-        this.push('calm', 'Вы говорите вслух. Кто-то отводит глаза, кто-то предлагает помощь — и это меняет неделю.');
+        this.push('calm', S('Вы говорите вслух. Кто-то отводит глаза, кто-то предлагает помощь — и это меняет неделю.',
+                            'You say it out loud. Someone looks away, someone offers help — and that changes the week.'));
       } else if (idx === 1) {
         s.quality = clamp(s.quality - 7); s.money = clamp(s.money + 4);
-        this.push('bad', 'Вы молчите. На работе не знают, дома не спрашивают. Вы носите это один.');
+        this.push('bad', S('Вы молчите. На работе не знают, дома не спрашивают. Вы носите это один.',
+                           'You stay silent. At work they do not know, at home they do not ask. You carry it alone.'));
       } else {
         s.quality = clamp(s.quality + 5); s.adherence = clamp01(s.adherence + .06); s.money = clamp(s.money - 2);
-        this.push('calm', 'Вы находите людей с таким же диагнозом. Впервые за долгое время кто-то понимает без объяснений.');
+        this.push('calm', S('Вы находите людей с таким же диагнозом. Впервые за долгое время кто-то понимает без объяснений.',
+                            'You find people with the same diagnosis. For the first time in a long while someone understands without explanation.'));
       }
       this.push('note', def.note);
     }
     else if (id === 'late') {
       if (idx === 0) {
         this.mult *= 1.07; s.quality = clamp(s.quality - 5); s.money = clamp(s.money - 10 * d.cost);
-        this.push('calm', 'Вы продолжаете. Курс за курсом, анализ за анализом. Надежда — это тоже лечение.');
+        this.push('calm', S('Вы продолжаете. Курс за курсом, анализ за анализом. Надежда — это тоже лечение.',
+                            'You carry on. Course after course, test after test. Hope is treatment too.'));
       } else if (idx === 1) {
         this.mult *= .99; s.quality = clamp(s.quality + 12);
-        this.push('good', 'Вы выбираете не бороться за каждый месяц, а жить в тех, что есть. Боль отступает первой.');
+        this.push('good', S('Вы выбираете не бороться за каждый месяц, а жить в тех, что есть. Боль отступает первой.',
+                            'You choose not to fight for every month but to live in the ones you have. The pain recedes first.'));
       } else {
         s.money = clamp(s.money - 20 * d.cost);
-        if (this.rng() < .4) { this.mult *= 1.18; this.push('good', 'Вам достаётся место в исследовании. Врач не обещает ничего — и вы согласны даже на это.'); }
-        else { this.mult *= .9; this.push('bad', 'Экспериментальное лечение не работает. Вы платите за него сами.'); }
+        if (this.rng() < .4) { this.mult *= 1.18; this.push('good', S('Вам достаётся место в исследовании. Врач не обещает ничего — и вы согласны даже на это.',
+                                                                      'You get a place in a trial. The doctor promises nothing — and you agree even to that.')); }
+        else { this.mult *= .9; this.push('bad', S('Экспериментальное лечение не работает. Вы платите за него сами.',
+                                                   'The experimental treatment does not work. You pay for it yourself.')); }
       }
       this.push('note', def.note);
     }
@@ -1121,13 +1485,15 @@ class Life {
     this.done = true; this.pending = null; this.queue = []; this.s.t = this.endT; this.update();
     if (this.s.cured) {
       this.outcome = 'cured';
-      this.push('big', 'Болезнь осталась позади. Это не значит, что она не вернётся. Это значит, что сейчас её нет.');
+      this.push('big', S('Болезнь осталась позади. Это не значит, что она не вернётся. Это значит, что сейчас её нет.',
+                         'The disease is behind you. That does not mean it will not return. It means that right now it is not there.'));
     } else {
       this.outcome = 'dead';
       const age = Math.round(this.onset + this.s.t);
       this.push('big', this.soft
-        ? 'Здесь жизнь заканчивается.'
-        : `Вы умираете в ${yearsRu(age)}. Врач называет причину: ${this.d.death}.`);
+        ? S('Здесь жизнь заканчивается.', 'Here the life ends.')
+        : S(`Вы умираете в ${yrs(age)}. Врач называет причину: ${this.d.death}.`,
+            `You die at ${age}. The doctor names the cause: ${this.d.death}.`));
     }
   }
 }
@@ -1157,17 +1523,23 @@ const saveST = () => { try { localStorage.setItem(LS_SET, JSON.stringify(ST)); }
 
 /* --- селекты --- */
 const selCountry = $('#selCountry'), selDisease = $('#selDisease');
-COUNTRIES.forEach(c => {
-  const o = document.createElement('option');
-  o.value = c.id; o.textContent = c.name; selCountry.append(o);
-});
-const optAuto = document.createElement('option');
-optAuto.value = 'auto'; optAuto.textContent = 'По статистике — случайная болезнь';
-selDisease.append(optAuto);
-DISEASES.forEach(d => {
-  const o = document.createElement('option');
-  o.value = d.id; o.textContent = d.name + ' · ' + d.group; selDisease.append(o);
-});
+function rebuildSelects() {
+  selCountry.innerHTML = '';
+  COUNTRIES.forEach(c => {
+    const o = document.createElement('option');
+    o.value = c.id; o.textContent = c.name; selCountry.append(o);
+  });
+  selDisease.innerHTML = '';
+  const optAuto = document.createElement('option');
+  optAuto.value = 'auto';
+  optAuto.textContent = S('По статистике — случайная болезнь', 'By statistics — a random disease');
+  selDisease.append(optAuto);
+  DISEASES.forEach(d => {
+    const o = document.createElement('option');
+    o.value = d.id; o.textContent = d.name + ' · ' + d.group; selDisease.append(o);
+  });
+  syncUI();
+}
 
 function syncUI() {
   $$('#segSex button').forEach(b => b.classList.toggle('on', b.dataset.v === ST.sex));
@@ -1187,15 +1559,16 @@ $('#tgSoft').onchange = e => { ST.soft = e.target.checked; saveST(); };
 $('#tgMusic').onchange = e => { ST.music = e.target.checked; saveST(); setMusic(e.target.checked); };
 
 /* --- таблица болезней --- */
-(() => {
+function renderDiseaseTable() {
   const tb = $('#diseaseRows');
+  tb.innerHTML = '';
   DISEASES.slice().sort((a, b) => b.weight - a.weight).forEach(d => {
     const tr = document.createElement('tr');
     tr.innerHTML = `<td>${esc(d.name)}<span class="tag">${esc(d.group)}</span></td>` +
-      `<td class="hide-s">${d.onset[0]}–${d.onset[2]} лет</td><td>${esc(d.arc)}</td>`;
+      `<td class="hide-s">${S(`${d.onset[0]}–${d.onset[2]} лет`, `${d.onset[0]}–${d.onset[2]} years`)}</td><td>${esc(d.arc)}</td>`;
     tb.append(tr);
   });
-})();
+}
 
 /* --- счётчики --- */
 const RATES = [20e6 / 31536000, 9.7e6 / 31536000, 41e6 / 31536000];
@@ -1244,32 +1617,37 @@ function startLife(allRandom) {
   feedIdx = 0; paused = true; panelOpen = true; ended = false; speed = 1; atBottom = true;
   $('#feed').innerHTML = '';
   $('#simDisease').textContent = d.name;
-  $('#simPerson').textContent = `${sex === 'female' ? 'женщина' : 'мужчина'} · ${yearsRu(onset)} · ${country.name} · ${code}`;
+  $('#simPerson').textContent = S(`${sex === 'female' ? 'женщина' : 'мужчина'} · ${yrs(onset)} · ${country.name} · ${code}`,
+    `${sex === 'female' ? 'female' : 'male'} · ${yrs(onset)} · ${country.name} · ${code}`);
   $('#mSym').style.width = '0%'; $('#mCtl').style.width = '0%'; $('#mLife').style.width = '0%';
   $('#simBar').style.width = '0%';
-  $('#scrubL').textContent = 'диагноз в ' + onset;
+  $('#scrubL').textContent = S('диагноз в ' + onset, 'diagnosis at ' + onset);
   $('#simAge').textContent = onset;
-  $('#simAgeWord').textContent = plural(onset, 'год', 'года', 'лет');
+  $('#simAgeWord').textContent = ageWord(onset);
   $('#simYear').textContent = NOW_YEAR;
   $$('.spd').forEach(b => b.classList.toggle('on', b.dataset.spd === '1'));
-  $('#btnPause').textContent = 'Пауза';
+  $('#btnPause').textContent = S('Пауза', 'Pause');
   $('#sim').classList.add('on');
   document.body.style.overflow = 'hidden';
 
   $('#panelCard').innerHTML = `
-    <p class="kick">Жизнь ${code} · ${esc(d.group)}</p>
+    <p class="kick">${S('Жизнь', 'Life')} ${code} · ${esc(d.group)}</p>
     <h3>${esc(d.name)}</h3>
     <p class="pt" style="font-family:var(--serif);font-size:15px;color:#cfcbc4">${esc(d.onsetLine)}</p>
     <p class="pt">${esc(d.tagline)}</p>
-    <p class="pt" style="color:var(--dim2);font-size:12.5px">Вам ${yearsRu(onset)}. ${esc(country.name)}. Доступ к помощи: ${accessWord(country.access)}. Болезнь выбрана не вами — как и в жизни.</p>
-    <div class="opts"><button class="opt" id="btnBegin"><span class="k">→</span><span class="tx"><strong>Начать</strong><em>Около 20 минут, если не ускорять.</em></span></button></div>
-    <p class="pn">Внизу — кнопки паузы и скорости. Каждое решение меняет то, что будет дальше.</p>`;
+    <p class="pt" style="color:var(--dim2);font-size:12.5px">${S(`Вам ${yrs(onset)}. ${esc(country.name)}. Доступ к помощи: ${accessWord(country.access)}. Болезнь выбрана не вами — как и в жизни.`,
+      `You are ${yrs(onset)} old. ${esc(country.name)}. Access to care: ${accessWord(country.access)}. The disease was not your choice — as in life.`)}</p>
+    <div class="opts"><button class="opt" id="btnBegin"><span class="k">→</span><span class="tx"><strong>${S('Начать', 'Begin')}</strong><em>${S('Около 20 минут, если не ускорять.', 'About 20 minutes if you do not speed up.')}</em></span></button></div>
+    <p class="pn">${S('Внизу — кнопки паузы и скорости. Каждое решение меняет то, что будет дальше.', 'The pause and speed buttons are below. Every decision changes what comes next.')}</p>`;
   $('#panel').classList.add('on');
   $('#btnBegin').onclick = begin;
   setTimeout(() => { const b = $('#btnBegin'); if (b) b.focus(); }, 80);
 }
 
-function accessWord(a) { return a > .8 ? 'высокий' : a > .55 ? 'средний' : a > .35 ? 'низкий' : 'почти никакой'; }
+function accessWord(a) {
+  if (L === 'en') return a > .8 ? 'high' : a > .55 ? 'moderate' : a > .35 ? 'low' : 'almost none';
+  return a > .8 ? 'высокий' : a > .55 ? 'средний' : a > .35 ? 'низкий' : 'почти никакой';
+}
 
 function begin() {
   $('#panel').classList.remove('on');
@@ -1299,13 +1677,15 @@ function paint() {
   if (!sim) return;
   const l = sim, s = l.s, age = Math.floor(l.onset + s.t);
   $('#simAge').textContent = age;
-  $('#simAgeWord').textContent = plural(age, 'год', 'года', 'лет');
+  $('#simAgeWord').textContent = ageWord(age);
   $('#simYear').textContent = Math.floor(NOW_YEAR + s.t);
   $('#mSym').style.width = clamp(3 + s.prog * 92) + '%';
   $('#mCtl').style.width = (s.control * 100) + '%';
   $('#mLife').style.width = s.quality + '%';
   $('#simBar').style.width = (clamp01(s.t / Math.max(.3, l.endT)) * 100) + '%';
-  $('#scrubR').textContent = s.cured ? 'болезнь позади' : yearsRu(l.endT) + ' с диагнозом';
+  $('#scrubR').textContent = s.cured
+    ? S('болезнь позади', 'the disease is behind you')
+    : S(`${yrs(l.endT)} с диагнозом`, `${yrs(l.endT)} with the diagnosis`);
   const feed = $('#feed');
   for (; feedIdx < l.events.length; feedIdx++) {
     const e = l.events[feedIdx];
@@ -1313,7 +1693,7 @@ function paint() {
     el.className = 'ev ' + (e.kind === 'note' ? 'note' : e.kind);
     const m = document.createElement('div');
     m.className = 'm';
-    m.textContent = e.kind === 'note' ? '' : `${Math.floor(NOW_YEAR + e.t)} · ${yearsRu(e.age)}`;
+    m.textContent = e.kind === 'note' ? '' : `${Math.floor(NOW_YEAR + e.t)} · ${yrs(e.age)}`;
     const p = document.createElement('p');
     p.textContent = e.text;
     el.append(m, p);
@@ -1363,7 +1743,7 @@ function choose(i) {
 /* --- конец жизни --- */
 function shadows() {
   const others = COUNTRIES.filter(c => c.id !== sim.country.id);
-  const order = ['in','ng','br','de','us','cn','jp','ke','eg','gb','fr','za','id','mx','pl']
+  const order = ['ru','by','in','ng','br','de','us','cn','jp','ke','eg','gb','fr','za','id','mx','pl']
     .map(id => others.find(c => c.id === id)).filter(Boolean);
   const r = mulberry32((sim.seed ^ 0x9e3779b9) >>> 0);
   const out = [];
@@ -1378,9 +1758,9 @@ function shadows() {
 
 function shadowLabel(x) {
   const f = x.sex === 'female';
-  if (x.kind === 'cured') return f ? 'Вылечили. Живёт дальше.' : 'Вылечили. Живёт дальше.';
-  if (x.years < 1) return f ? 'Умерла почти сразу.' : 'Умер почти сразу.';
-  return `${f ? 'Прожила' : 'Прожил'} с диагнозом ${yearsRu(x.years)}.`;
+  if (x.kind === 'cured') return S('Вылечили. Живёт дальше.', 'Cured. Still alive.');
+  if (x.years < 1) return S(f ? 'Умерла почти сразу.' : 'Умер почти сразу.', 'Died almost at once.');
+  return S(`${f ? 'Прожила' : 'Прожил'} с диагнозом ${yrs(x.years)}.`, `Lived with the diagnosis ${yrs(x.years)}.`);
 }
 
 function showEnd() {
@@ -1393,54 +1773,59 @@ function showEnd() {
   const words = [];
 
   let html = `<div class="end" id="endCard">
-    <p class="kick">Жизнь ${code} · ${esc(d.name)} · ${esc(l.country.name)} · ${l.sex === 'female' ? 'женщина' : 'мужчина'}</p>`;
+    <p class="kick">${S('Жизнь', 'Life')} ${code} · ${esc(d.name)} · ${esc(l.country.name)} · ${S(l.sex === 'female' ? 'женщина' : 'мужчина', l.sex === 'female' ? 'female' : 'male')}</p>`;
   if (cured) {
-    html += `<h2>Она осталась <em>позади</em></h2>
-      <p class="cause">Вам ${yearsRu(age)}. ${esc(d.name)} — в прошлом. Впереди обычная жизнь, которую никто не обещал.</p>`;
+    html += `<h2>${S('Она осталась', 'It stayed')} <em>${S('позади', 'behind')}</em></h2>
+      <p class="cause">${S(`Вам ${yrs(age)}. ${esc(d.name)} — в прошлом. Впереди обычная жизнь, которую никто не обещал.`,
+        `You are ${yrs(age)} old. ${esc(d.name)} is in the past. Ahead is an ordinary life no one promised.`)}</p>`;
   } else {
-    html += `<h2>Вам было <em>${age}</em></h2>
-      <p class="cause">${esc(d.name)}. Причина — ${esc(d.death)}. Вы прожили с диагнозом ${yearsRu(l.s.t)}${l.soft ? '.' : ', и это была не вся ваша жизнь.'}</p>`;
+    html += `<h2>${S('Вам было', 'You were')} <em>${age}</em></h2>
+      <p class="cause">${S(`${esc(d.name)}. Причина — ${esc(d.death)}. Вы прожили с диагнозом ${yrs(l.s.t)}${l.soft ? '.' : ', и это была не вся ваша жизнь.'}`,
+        `${esc(d.name)}. The cause — ${esc(d.death)}. You lived with the diagnosis ${yrs(l.s.t)}${l.soft ? '.' : ', and that was not your whole life.'}`)}</p>`;
   }
 
   html += `<div class="stat-row">
-      <div><b>${age}</b><span>${cured ? 'сейчас' : 'лет в конце'}</span></div>
-      <div><b>${Math.round(l.s.t)}</b><span>лет с диагнозом</span></div>
-      <div><b>${l.choices.length}</b><span>пауз и решений</span></div>
+      <div><b>${age}</b><span>${cured ? S('сейчас', 'now') : S('лет в конце', 'years at the end')}</span></div>
+      <div><b>${Math.round(l.s.t)}</b><span>${S('лет с диагнозом', 'years with the diagnosis')}</span></div>
+      <div><b>${l.choices.length}</b><span>${S('пауз и решений', 'pauses and decisions')}</span></div>
     </div>`;
 
-  html += `<h4>Рядом, в тот же день</h4>
-    <p class="small" style="color:var(--dim);margin-bottom:12px">Пока вы слышали свой диагноз, его же услышали ещё примерно ${fmtInt(perDay)} человек. Четверо из них жили по той же статистике — в других странах. Никто из них этого не выбирал.</p>
+  html += `<h4>${S('Рядом, в тот же день', 'Beside you, the same day')}</h4>
+    <p class="small" style="color:var(--dim);margin-bottom:12px">${S(`Пока вы слышали свой диагноз, его же услышали ещё примерно ${fmtInt(perDay)} человек. Четверо из них жили по той же статистике — в других странах. Никто из них этого не выбирал.`,
+      `While you heard your diagnosis, about ${fmtInt(perDay)} more people heard the same. Four of them lived by the same statistics — in other countries. None of them chose it.`)}</p>
     <div class="neigh">`;
   sh.forEach(x => {
-    html += `<article><h5>${esc(x.country.name)} · ${x.sex === 'female' ? 'женщина' : 'мужчина'}</h5>
-      <p>диагноз в ${x.onset}</p>
-      <div class="ag">${x.endAge} ${plural(x.endAge, 'год', 'года', 'лет')}</div>
+    html += `<article><h5>${esc(x.country.name)} · ${S(x.sex === 'female' ? 'женщина' : 'мужчина', x.sex === 'female' ? 'female' : 'male')}</h5>
+      <p>${S('диагноз в ' + x.onset, 'diagnosis at ' + x.onset)}</p>
+      <div class="ag">${x.endAge} ${ageWord(x.endAge)}</div>
       <p>${esc(shadowLabel(x))}</p></article>`;
   });
   html += `</div>`;
 
-  html += `<h4>Ваши решения</h4><div class="recap">`;
+  html += `<h4>${S('Ваши решения', 'Your decisions')}</h4><div class="recap">`;
   l.choices.forEach(c => { html += `<div><span>${esc(c.q)}</span><b>${esc(c.a)}</b></div>`; });
   html += `</div>`;
 
-  html += `<h4>Что здесь было настоящим</h4><div class="facts">`;
+  html += `<h4>${S('Что здесь было настоящим', 'What was real here')}</h4><div class="facts">`;
   d.facts.forEach(f => { html += `<div><b>${esc(f[0])}</b><span>${esc(f[1])}</span></div>`; });
   html += `</div>`;
 
-  html += `<h4>Что вы скажете этому человеку?</h4>
-    <p class="small dim">Одна строка. Останется только в этом браузере.</p>
-    <textarea class="words" id="wordsBox" maxlength="240" placeholder="Например: я бы не ждала так долго."></textarea>
+  html += `<h4>${S('Что вы скажете этому человеку?', 'What would you say to this person?')}</h4>
+    <p class="small dim">${S('Одна строка. Останется только в этом браузере.', 'One line. It stays in this browser only.')}</p>
+    <textarea class="words" id="wordsBox" maxlength="240" placeholder="${S('Например: я бы не ждала так долго.', 'For example: I would not have waited so long.')}"></textarea>
     <div class="end-actions">
-      <button class="btn" id="btnAgain">Прожить другую болезнь</button>
-      <button class="btn ghost" id="btnHome">На главную</button>
-      <button class="btn ghost" id="btnCopy">Скопировать итог</button>
+      <button class="btn" id="btnAgain">${S('Прожить другую болезнь', 'Live another disease')}</button>
+      <button class="btn ghost" id="btnHome">${S('На главную', 'Back to the start')}</button>
+      <button class="btn ghost" id="btnCopy">${S('Скопировать итог', 'Copy the summary')}</button>
     </div>`;
 
   if (d.help) {
-    html += `<div class="help">Если то, что вы прочитали, слишком похоже на вашу жизнь: 8-800-2000-122 (Россия, бесплатно, круглосуточно)<br>findahelpline.com — линии помощи в 130+ странах.</div>`;
+    html += `<div class="help">${S('Если то, что вы прочитали, слишком похоже на вашу жизнь: 8-800-2000-122 (Россия, бесплатно, круглосуточно)<br>findahelpline.com — линии помощи в 130+ странах.',
+      'If what you just read is too close to your life: 8-800-2000-122 (Russia, free, 24/7)<br>findahelpline.com — helplines in 130+ countries.')}</div>`;
   }
 
-  html += `<p class="fineprint">Это модель, а не прогноз и не медицинская рекомендация. Цифры — приблизительные оценки: ${esc(SOURCES)}. Течение болезни упрощено: решения меняют модель, а не реальность. Если вас что-то беспокоит в собственном здоровье, это повод пойти к врачу.</p>
+  html += `<p class="fineprint">${S(`Это модель, а не прогноз и не медицинская рекомендация. Цифры — приблизительные оценки: ${esc(SOURCES)}. Течение болезни упрощено: решения меняют модель, а не реальность. Если вас что-то беспокоит в собственном здоровье, это повод пойти к врачу.`,
+    `This is a model, not a forecast or medical advice. The figures are rough estimates: ${esc(SOURCES_EN)}. The course of the disease is simplified: decisions change the model, not reality. If something worries you about your own health, that is a reason to see a doctor.`)}</p>
   </div>`;
 
   $('#feed').insertAdjacentHTML('beforeend', html);
@@ -1450,8 +1835,9 @@ function showEnd() {
   $('#btnAgain').onclick = () => { closeSim(); startLife(true); };
   $('#btnHome').onclick = closeSim;
   $('#btnCopy').onclick = async () => {
-    const txt = `${d.name}. ${cured ? 'Излечение. Вам ' + age + '.' : 'Умер(ла) в ' + age + '.'} Прожито с диагнозом ${Math.round(l.s.t)} лет. ${l.country.name}. Симуляция «Один диагноз».`;
-    try { await navigator.clipboard.writeText(txt); $('#btnCopy').textContent = 'Скопировано'; } catch (e) {}
+    const txt = S(`${d.name}. ${cured ? 'Излечение. Вам ' + age + '.' : 'Умер(ла) в ' + age + '.'} Прожито с диагнозом ${Math.round(l.s.t)} лет. ${l.country.name}. Симуляция «Один диагноз».`,
+      `${d.name}. ${cured ? 'Cured at ' + age + '.' : 'Died at ' + age + '.'} Lived ${Math.round(l.s.t)} years with the diagnosis. ${l.country.name}. “One Diagnosis” simulation.`);
+    try { await navigator.clipboard.writeText(txt); $('#btnCopy').textContent = S('Скопировано', 'Copied'); } catch (e) {}
   };
   $('#wordsBox').addEventListener('change', e => {
     const v = e.target.value.trim();
@@ -1467,6 +1853,8 @@ function saveLife(words) {
   try { arr = JSON.parse(localStorage.getItem(LS_LIVES) || '[]'); } catch (e) {}
   const entry = {
     code,
+    diseaseId: l.d.id,
+    countryId: l.country.id,
     disease: l.d.name,
     country: l.country.name,
     onset: l.onset,
@@ -1489,9 +1877,13 @@ function renderPast() {
   box.classList.add('on');
   list.innerHTML = '';
   arr.forEach(x => {
+    const dd = DISEASES.find(y => y.id === x.diseaseId);
+    const cc = COUNTRIES.find(c => c.id === x.countryId);
+    const dname = dd ? dd.name : x.disease;
+    const cname = cc ? cc.name : x.country;
     const d = document.createElement('div');
-    d.innerHTML = `<b>${esc(x.disease)}${x.kind === 'cured' ? ' · излечение' : ''}</b>` +
-      `<span>${x.endAge} ${plural(x.endAge, 'год', 'года', 'лет')} · ${esc(x.country)}</span><code>${esc(x.code)}</code>`;
+    d.innerHTML = `<b>${esc(dname)}${x.kind === 'cured' ? S(' · излечение', ' · cured') : ''}</b>` +
+      `<span>${x.endAge} ${ageWord(x.endAge)} · ${esc(cname)}</span><code>${esc(x.code)}</code>`;
     list.append(d);
   });
 }
@@ -1514,7 +1906,7 @@ $('#btnRandom').onclick = () => startLife(true);
 $('#btnPause').onclick = () => {
   if (!sim) return;
   paused = !paused;
-  $('#btnPause').textContent = paused ? 'Продолжить' : 'Пауза';
+  $('#btnPause').textContent = paused ? S('Продолжить', 'Resume') : S('Пауза', 'Pause');
   lastTs = performance.now();
 };
 $$('.spd').forEach(b => b.onclick = () => {
@@ -1559,8 +1951,129 @@ function setMusic(on) {
   } else if (!on && pad) { pad.stop(); pad = null; }
 }
 
+/* --- язык интерфейса --- */
+const UI = {
+  docTitle:   {ru:'Один диагноз — симуляция болезни', en:'One Diagnosis — a disease simulation'},
+  docDesc:    {ru:'Симуляция одной болезни: диагноз выбирается по реальной статистике, и вы проживаете его до конца. 16 болезней, пять пауз, данные ВОЗ и GLOBOCAN.',
+               en:'A simulation of one disease: the diagnosis is drawn from real statistics and you live it to the end. 16 diseases, five pauses, WHO and GLOBOCAN data.'},
+  brand:      {ru:'Один диагноз', en:'One Diagnosis'},
+  brandSub:   {ru:'симуляция болезни · v0.1 · 16+', en:'disease simulation · v0.1 · 16+'},
+  navStart:   {ru:'Начать', en:'Start'},
+  navHow:     {ru:'Как это устроено', en:'How it works'},
+  navList:    {ru:'Болезни', en:'Diseases'},
+  navHelp:    {ru:'Помощь', en:'Help'},
+  heroKicker: {ru:'Симуляция одной болезни · реальная статистика · около 20 минут', en:'A simulation of one disease · real statistics · about 20 minutes'},
+  heroOf:     {ru:'из 4', en:'of 4'},
+  heroLead:   {ru:'Три из четырёх смертей в мире приходятся на болезни, которые длятся годами: сердце, рак, диабет, лёгкие. <b>41 миллион человек в год.</b> Почти никто из них не выбирал, чем заболеть — так же, как не выбирают, где родиться.',
+               en:'Three in four deaths worldwide come from illnesses that last for years: heart disease, cancer, diabetes, lung disease. <b>41 million people a year.</b> Almost none of them chose what to get — just as no one chooses where to be born.'},
+  heroAfter:  {ru:'Здесь вы получаете один диагноз по реальной статистике — пол, возраст, страну и вероятности — и проживаете его до конца. С паузами там, где жизнь действительно делает выбор.',
+               en:'Here you get one diagnosis based on real statistics — sex, age, country and probabilities — and live it to the end. With pauses where life actually makes a choice.'},
+  countersAria:{ru:'Счётчики в реальном времени', en:'Counters in real time'},
+  counter1:   {ru:'новых случаев рака в мире с тех пор, как вы открыли страницу', en:'new cancer cases worldwide since you opened this page'},
+  counter2:   {ru:'смертей от рака за это же время', en:'cancer deaths in the same time'},
+  counter3:   {ru:'смертей от длительных болезней за это же время', en:'deaths from long-term diseases in the same time'},
+  setupH2:    {ru:'Если бы диагноз поставили сейчас', en:'If the diagnosis came today'},
+  setupSub:   {ru:'Пол, возраст и страну определяет статистика. Вы можете поменять три вещи — и начать.', en:'Sex, age and country are set by statistics. You can change three things — and begin.'},
+  fldSex:     {ru:'Пол', en:'Sex'},
+  sexF:       {ru:'Женский', en:'Female'},
+  sexM:       {ru:'Мужской', en:'Male'},
+  sexR:       {ru:'Случайно', en:'Random'},
+  fldAge:     {ru:'Возраст начала', en:'Age at onset'},
+  ageStat:    {ru:'По статистике', en:'By statistics'},
+  ageYoung:   {ru:'Молодой', en:'Young'},
+  ageOld:     {ru:'Пожилой', en:'Older'},
+  fldCountry: {ru:'Страна и доступ к помощи', en:'Country and access to care'},
+  ariaCountry:{ru:'Страна', en:'Country'},
+  fldDisease: {ru:'Болезнь', en:'Disease'},
+  ariaDisease:{ru:'Болезнь', en:'Disease'},
+  tgAuto:     {ru:'Авторежим — просто наблюдать', en:'Auto mode — just watch'},
+  tgSoft:     {ru:'Убрать тяжёлые сцены', en:'Remove harsh scenes'},
+  tgMusic:    {ru:'Тихая музыка', en:'Quiet music'},
+  btnStart:   {ru:'Прожить этот диагноз', en:'Live this diagnosis'},
+  btnRandom:  {ru:'Случайная жизнь', en:'Random life'},
+  startHint:  {ru:'16 болезней · 5 пауз · ничего не отправляется на сервер', en:'16 diseases · 5 pauses · nothing is sent to a server'},
+  howH2:      {ru:'Как это устроено', en:'How it works'},
+  howSub:     {ru:'Одна жизнь с одним диагнозом. Не игра в выбор — попытка прожить статистику изнутри.', en:'One life with one diagnosis. Not a game of choices — an attempt to live the statistics from the inside.'},
+  howC1t:     {ru:'Диагноз не выбирают', en:'You don’t choose the diagnosis'},
+  howC1p:     {ru:'Болезнь выпадает по реальной частоте: диабет и депрессия — часто, рассеянный склероз и муковисцидоз — редко. Пол, возраст начала и страна тоже берутся из статистики, а не из ваших пожеланий.',
+               en:'The disease is drawn by real frequency: diabetes and depression often, multiple sclerosis and cystic fibrosis rarely. Sex, age at onset and country also come from statistics, not from your preferences.'},
+  howC2t:     {ru:'Пауза', en:'The pause'},
+  howC2p:     {ru:'В пяти местах время останавливается: первые симптомы, обследование, начало лечения, близкие и работа, последний отрезок. Каждый выбор меняет то, что будет дальше, — но не отменяет статистику.',
+               en:'In five places time stops: first symptoms, tests, the start of treatment, family and work, the last stretch. Each choice changes what comes next — but does not cancel the statistics.'},
+  howC3t:     {ru:'Рядом идут другие', en:'Others walk beside you'},
+  howC3p:     {ru:'В тот же день такой же диагноз слышат тысячи людей. Четверо из них проживают его вместе с вами — в других странах и с разным доступом к помощи. Никто из них этого не выбирал.',
+               en:'On the same day thousands of people hear the same diagnosis. Four of them live it alongside you — in other countries, with different access to care. None of them chose it.'},
+  howP1:      {ru:'Продолжительность жизни с болезнью, вероятность ремиссии и тяжесть осложнений зависят от доступа к медицине — и это самая жестокая часть статистики. Одна и та же болезнь в стране с бесплатной помощью и в стране, где лечение оплачивают из кармана, заканчивается по-разному. Поэтому в симуляции страна влияет сильнее, чем любой ваш выбор.',
+               en:'How long a person lives with a disease, the chance of remission and the severity of complications depend on access to medicine — and that is the cruellest part of the statistics. The same disease in a country with free care and in a country where treatment is paid out of pocket ends differently. That is why, in this simulation, the country matters more than any choice you make.'},
+  howP2:      {ru:'Всё, что происходит, — модель. Она построена на опубликованных оценках, но не предсказывает ничью конкретную жизнь. <em>Здесь нельзя умереть от того, что вы «плохо играли»: можно только увидеть, как статистика распределяет шансы.</em>',
+               en:'Everything that happens is a model. It is built on published estimates but does not predict any particular life. <em>Here you cannot die because you “played badly”: you can only see how statistics distribute chances.</em>'},
+  listH2:     {ru:'Болезни в симуляции', en:'Diseases in the simulation'},
+  listSub:    {ru:'Шестнадцать состояний — от самых частых в мире до редких. Частота выпадения соответствует распространённости.',
+               en:'Sixteen conditions — from the most common in the world to rare ones. How often one appears matches its prevalence.'},
+  tblDisease: {ru:'Болезнь', en:'Disease'},
+  tblOnset:   {ru:'Начало', en:'Onset'},
+  tblArc:     {ru:'Чем обычно заканчивается', en:'How it usually ends'},
+  listMicro:  {ru:'Цифры — приблизительные оценки ВОЗ, GBD, GLOBOCAN и профильных организаций. Округлены и не заменяют консультацию врача.',
+               en:'The figures are rough estimates from WHO, GBD, GLOBOCAN and specialist organisations. They are rounded and do not replace a doctor’s advice.'},
+  pastH2:     {ru:'Прожитые здесь жизни', en:'Lives lived here'},
+  pastSub:    {ru:'Сохраняются только в этом браузере.', en:'Saved only in this browser.'},
+  pastClear:  {ru:'Очистить', en:'Clear'},
+  helpH2:     {ru:'Тяжёлые темы', en:'Hard subjects'},
+  helpH3:     {ru:'Здесь умирают. Так же часто, как в реальной статистике', en:'People die here. As often as in real statistics'},
+  helpP1:     {ru:'В симуляции есть смерть, тяжёлые диагнозы, боль, долги и отчаяние. Сцены не показываются подробно, а флажок «Убрать тяжёлые сцены» смягчает формулировки. Если вам сейчас тяжело, симуляция может подождать.',
+               en:'The simulation contains death, severe diagnoses, pain, debt and despair. Scenes are not shown in detail, and the “Remove harsh scenes” switch softens the wording. If things are hard for you right now, the simulation can wait.'},
+  helpP2:     {ru:'Если вы думаете о том, чтобы причинить себе вред, или просто больше не справляетесь — это не то, что нужно переживать в одиночку.',
+               en:'If you are thinking of harming yourself, or simply cannot cope any more — this is not something to carry alone.'},
+  helpL1:     {ru:'<b>Россия:</b> 8-800-2000-122 — бесплатно, круглосуточно', en:'<b>Russia:</b> 8-800-2000-122 — free, 24/7'},
+  helpL2:     {ru:'<b>Экстренно:</b> 112', en:'<b>Emergency:</b> 112'},
+  helpL3:     {ru:'<b>Мир:</b> findahelpline.com — линии в 130+ странах', en:'<b>Worldwide:</b> findahelpline.com — helplines in 130+ countries'},
+  helpL4:     {ru:'<b>Не один:</b> скажите вслух близкому человеку', en:'<b>Not alone:</b> say it out loud to someone close'},
+  helpMicro:  {ru:'Симуляция образовательная: она не ставит диагноз, не назначает лечение и не заменяет врача. Если вас что-то беспокоит в собственном здоровье — это повод пойти к специалисту, а не прожить это здесь.',
+               en:'This simulation is educational: it does not diagnose, prescribe treatment or replace a doctor. If something worries you about your own health, that is a reason to see a specialist, not to live it here.'},
+  footText:   {ru:'«Один диагноз» — симуляция болезни. Цифры: ВОЗ (неинфекционные заболевания, 2019–2023), GLOBOCAN / IARC (2022), GBD 2019, IDF, UNAIDS, MSIF. Модель течения болезни — упрощение, а не прогноз.',
+               en:'“One Diagnosis” is a disease simulation. Figures: WHO (noncommunicable diseases, 2019–2023), GLOBOCAN / IARC (2022), GBD 2019, IDF, UNAIDS, MSIF. The disease model is a simplification, not a forecast.'},
+  footNoServer:{ru:'Ничего не отправляется на сервер', en:'Nothing is sent to a server'},
+  footHelp:   {ru:'Помощь рядом', en:'Help nearby'},
+  footRestart:{ru:'Начать заново', en:'Start over'},
+  simAria:    {ru:'Симуляция болезни', en:'Disease simulation'},
+  pause:      {ru:'Пауза', en:'Pause'},
+  pauseTitle: {ru:'Пауза (пробел)', en:'Pause (space)'},
+  exit:       {ru:'Выйти', en:'Exit'},
+  meterSym:   {ru:'Симптомы', en:'Symptoms'},
+  meterCtl:   {ru:'Контроль', en:'Control'},
+  meterLife:  {ru:'Жизнь', en:'Life'},
+  scrubStart: {ru:'начало', en:'start'}
+};
+
+function applyLang() {
+  document.documentElement.lang = L;
+  document.title = UI.docTitle[L];
+  const md = document.querySelector('meta[name="description"]');
+  if (md) md.setAttribute('content', UI.docDesc[L]);
+  $$('[data-i18n]').forEach(el => { const v = UI[el.dataset.i18n]; if (v) el.textContent = v[L]; });
+  $$('[data-i18n-html]').forEach(el => { const v = UI[el.dataset.i18nHtml]; if (v) el.innerHTML = v[L]; });
+  $$('[data-i18n-aria]').forEach(el => { const v = UI[el.dataset.i18nAria]; if (v) el.setAttribute('aria-label', v[L]); });
+  $$('[data-i18n-title]').forEach(el => { const v = UI[el.dataset.i18nTitle]; if (v) el.title = v[L]; });
+  $$('#langSwitch button').forEach(b => b.classList.toggle('on', b.dataset.lang === L));
+  if (!sim) $('#btnPause').textContent = UI.pause[L];
+}
+
+function setLang(next) {
+  if ((next !== 'ru' && next !== 'en') || next === L) return;
+  L = next;
+  try { localStorage.setItem(LS_LANG, L); } catch (e) {}
+  localizeData();
+  rebuildSelects();
+  renderDiseaseTable();
+  renderPast();
+  applyLang();
+}
+
 /* --- инициализация --- */
-syncUI();
+$$('#langSwitch button').forEach(b => b.onclick = () => setLang(b.dataset.lang));
+rebuildSelects();
+renderDiseaseTable();
+applyLang();
 renderPast();
 if (ST.music) setMusic(true);
 </script>
