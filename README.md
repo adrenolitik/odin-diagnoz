@@ -1,5 +1,7 @@
 # Один диагноз
 
+[![Сайт](https://img.shields.io/badge/site-adrenolitik.github.io%2Fodin--diagnoz-e0694f)](https://adrenolitik.github.io/odin-diagnoz/) [![GitHub Pages](https://img.shields.io/website?url=https%3A%2F%2Fadrenolitik.github.io%2Fodin-diagnoz%2F&label=pages&up_message=online&down_message=offline&color=e0694f)](https://adrenolitik.github.io/odin-diagnoz/)
+
 **Язык:** Русский · [English](README.en.md)
 
 Симуляция болезни: диагноз выпадает по реальной статистике — пол, возраст начала и страна берутся из данных, а не из пожеланий. Вы проживаете эту жизнь до конца, с паузами там, где жизнь действительно делает выбор. Рядом идут четыре такие же жизни в других странах: тот же диагноз, другой доступ к помощи.
