@@ -14,6 +14,8 @@
 
 ## Скриншоты
 
+### Русская версия
+
 ![Главная страница: «3 из 4», счётчики и настройки жизни](docs/screenshots/main.png)
 
 *Главная: статистика, счётчики в реальном времени и начало настройки.*
@@ -26,7 +28,21 @@
 
 *Финал: чем закончилась жизнь, четыре человека с тем же диагнозом в других странах, разбор ваших решений и последняя строка.*
 
-Снимки сделаны в Chrome при масштабе 1: главная и симуляция — 1280×900, финал — по высоте карточки. Живые цифры на главной в кадре — иллюстрация, а не текущее значение счётчика.
+### English version
+
+![Home page with «3 of 4», live counters and life settings](docs/screenshots/main-en.png)
+
+*Home: the statistics, live counters and the start of the setup — after pressing EN in the header.*
+
+![Simulation: meters, event feed and the “Whom to tell” pause](docs/screenshots/sim-en.png)
+
+*Simulation: age, meters, the life feed and one of the five pauses, with the decision card in English.*
+
+![End card: age, four neighbouring lives, the decisions and the facts](docs/screenshots/end-en.png)
+
+*End: how the life ended, four people with the same diagnosis in other countries, the decisions made and the last line.*
+
+Снимки сделаны в Chrome при масштабе 1: главная и симуляция — 1280×900, финал — по высоте карточки. Русские и английские кадры сняты на одних и тех же экранах; цифры счётчиков на главной — иллюстрация, а не текущее значение.
 
 ---
 
